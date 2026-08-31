@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:grimoire:grimlock:schema:v1alpha1:run", "title": "Grimlock Run", "type": "object", "additionalProperties": false,
+  "required": ["id", "sessionId", "status", "createdAt"],
+  "properties": {"id": {"type": "string", "minLength": 1}, "sessionId": {"type": "string", "minLength": 1}, "status": {"enum": ["running", "waiting_approval", "completed", "failed", "cancelled"]}, "createdAt": {"type": "string", "format": "date-time"}}
+}

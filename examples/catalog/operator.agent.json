@@ -1,0 +1,10 @@
+{
+  "apiVersion": "grimlock/v1alpha1",
+  "kind": "Agent",
+  "metadata": {"name": "operator", "version": "1.0.0"},
+  "spec": {
+    "execution": {"adapter": "adk-go", "modelProfileRef": "primary"},
+    "instruction": "Use admitted tools to answer the request.",
+    "tools": [{"kind": "Tool", "name": "status.read", "version": "1.0.0"}]
+  }
+}

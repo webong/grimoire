@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:grimoire:grimlock:schema:v1alpha1:resource",
+  "$defs": {
+    "metadata": {"type": "object", "additionalProperties": false, "required": ["name", "version"], "properties": {"name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}},
+    "agentRef": {"type": "object", "additionalProperties": false, "required": ["kind", "name", "version"], "properties": {"kind": {"const": "Agent"}, "name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}},
+    "clientRef": {"type": "object", "additionalProperties": false, "required": ["kind", "name", "version"], "properties": {"kind": {"const": "Client"}, "name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}},
+    "deviceRef": {"type": "object", "additionalProperties": false, "required": ["kind", "name", "version"], "properties": {"kind": {"const": "Device"}, "name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}},
+    "toolRef": {"type": "object", "additionalProperties": false, "required": ["kind", "name", "version"], "properties": {"kind": {"const": "Tool"}, "name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}},
+    "skillRef": {"type": "object", "additionalProperties": false, "required": ["kind", "name", "version"], "properties": {"kind": {"const": "Skill"}, "name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}}
+  }
+}

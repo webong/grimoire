@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:grimoire:grimlock:schema:v1alpha1:approval", "title": "Grimlock Approval", "type": "object", "additionalProperties": false,
+  "required": ["id", "runId", "toolRef", "argumentDigest", "status", "expiresAt"],
+  "properties": {"id": {"type": "string", "minLength": 1}, "runId": {"type": "string", "minLength": 1}, "toolRef": {"$ref": "resource.schema.json#/$defs/toolRef"}, "argumentDigest": {"type": "string", "minLength": 1}, "status": {"enum": ["pending", "approved", "rejected", "expired"]}, "expiresAt": {"type": "string", "format": "date-time"}}
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:grimoire:grimlock:schema:v1alpha1:tool",
+  "title": "Grimlock Tool", "type": "object", "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "grimlock/v1alpha1"}, "kind": {"const": "Tool"}, "metadata": {"$ref": "resource.schema.json#/$defs/metadata"},
+    "spec": {"type": "object", "additionalProperties": false, "required": ["effect", "inputSchema", "outputSchema", "executor"], "properties": {
+      "description": {"type": "string"}, "effect": {"enum": ["read", "write", "external"]}, "inputSchema": {"type": "object"}, "outputSchema": {"type": "object"},
+      "idempotency": {"enum": ["none", "caller-key-required"]}, "approval": {"enum": ["default", "required", "never"]},
+      "executor": {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"type": "string", "minLength": 1}, "binding": {"type": "string"}, "capability": {"type": "string"}}}
+    }}
+  }
+}

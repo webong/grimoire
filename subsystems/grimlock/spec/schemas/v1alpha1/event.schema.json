@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:grimoire:grimlock:schema:v1alpha1:event", "title": "Grimlock Event", "type": "object", "additionalProperties": false,
+  "required": ["apiVersion", "runId", "sequence", "type", "occurredAt", "data"],
+  "properties": {"apiVersion": {"const": "grimlock/v1alpha1"}, "runId": {"type": "string", "minLength": 1}, "sequence": {"type": "integer", "minimum": 1}, "type": {"type": "string", "minLength": 1}, "traceId": {"type": "string"}, "parentRunId": {"type": "string"}, "occurredAt": {"type": "string", "format": "date-time"}, "data": {"type": "object"}}
+}

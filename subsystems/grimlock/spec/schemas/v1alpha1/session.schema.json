@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:grimoire:grimlock:schema:v1alpha1:session", "title": "Grimlock Session", "type": "object", "additionalProperties": false,
+  "required": ["id", "subjectId", "agentRef", "createdAt"],
+  "properties": {"id": {"type": "string", "minLength": 1}, "subjectId": {"type": "string", "minLength": 1}, "agentRef": {"$ref": "resource.schema.json#/$defs/agentRef"}, "createdAt": {"type": "string", "format": "date-time"}}
+}

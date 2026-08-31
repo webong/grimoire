@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:grimoire:grimlock:schema:v1alpha1:connector", "title": "Grimlock Connector", "type": "object", "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "grimlock/v1alpha1"},
+    "kind": {"const": "Connector"},
+    "metadata": {"$ref": "resource.schema.json#/$defs/metadata"},
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "transport", "direction", "status", "allowedOperations"],
+      "properties": {
+        "protocol": {"type": "string", "minLength": 1},
+        "transport": {"type": "string", "minLength": 1},
+        "direction": {"enum": ["inbound", "outbound", "bidirectional"]},
+        "status": {"enum": ["active", "paused", "disabled"]},
+        "endpoint": {"type": "string"},
+        "handler": {"type": "string"},
+        "allowedOperations": {"type": "array", "items": {"type": "string"}},
+        "credentialRef": {"type": "string"},
+        "clientRef": {"$ref": "resource.schema.json#/$defs/clientRef"},
+        "deviceRef": {"$ref": "resource.schema.json#/$defs/deviceRef"}
+      }
+    }
+  }
+}

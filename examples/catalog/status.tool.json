@@ -1,0 +1,12 @@
+{
+  "apiVersion": "grimlock/v1alpha1",
+  "kind": "Tool",
+  "metadata": {"name": "status.read", "version": "1.0.0"},
+  "spec": {
+    "description": "Return the supplied status probe payload.",
+    "effect": "read",
+    "inputSchema": {"type": "object"},
+    "outputSchema": {"type": "object"},
+    "executor": {"kind": "builtin.echo"}
+  }
+}

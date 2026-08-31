@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:grimoire:grimlock:schema:v1alpha1:agent",
+  "title": "Grimlock Agent", "type": "object", "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "grimlock/v1alpha1"}, "kind": {"const": "Agent"}, "metadata": {"$ref": "resource.schema.json#/$defs/metadata"},
+    "spec": {"type": "object", "additionalProperties": false, "required": ["execution", "instruction"], "properties": {
+      "execution": {"type": "object", "additionalProperties": false, "required": ["adapter", "modelProfileRef"], "properties": {"adapter": {"type": "string", "minLength": 1}, "modelProfileRef": {"type": "string", "minLength": 1}}},
+      "instruction": {"type": "string"}, "tools": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/toolRef"}}, "skills": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/skillRef"}}
+    }}
+  }
+}
