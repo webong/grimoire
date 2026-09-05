@@ -13,7 +13,6 @@ use App\Events\Server\Chat\PreparingThreadMessage;
 use App\Events\Server\Chat\ThreadMessageDispatched;
 use App\Events\Server\Notifications\RoutingNotificationChannels;
 use App\Features\Actions\Chat\ProtocolRegistry;
-use Figurate\AccountManager\Support\AccountContextFactory;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -27,7 +26,6 @@ use Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo;
 use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
 use Webong\LaravelGouge\Ai\Storage\ThreadConversationStore;
 use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Events\Server\Auth\RobotProvisioned;
 use Webong\LaravelGouge\Features\Actions\Chat\AgentPromptOutboundMessageSender;
 use Webong\LaravelGouge\Features\Actions\Chat\Protocols\AgentPromptProtocol;
 use Webong\LaravelGouge\Jobs\ProcessInboundA2aPushWebhookJob;
@@ -35,7 +33,6 @@ use Webong\LaravelGouge\Listeners\AddAgentContextToChannelOutbox;
 use Webong\LaravelGouge\Listeners\AddAgentContextToChannelRoute;
 use Webong\LaravelGouge\Listeners\AddAgentContextToInboundChannel;
 use Webong\LaravelGouge\Listeners\AddAgentContextToResourcePayload;
-use Webong\LaravelGouge\Listeners\AttachProvisionedRobotToRequestedAccount;
 use Webong\LaravelGouge\Listeners\ConfigureAgentConversationThread;
 use Webong\LaravelGouge\Listeners\DecorateAgentMessageResponse;
 use Webong\LaravelGouge\Listeners\MigrateAgentUserData;
@@ -47,7 +44,6 @@ use Webong\LaravelGouge\Listeners\Server\Ai\RecordObserverAgentPrompting;
 use Webong\LaravelGouge\Listeners\Server\Chat\QueueThreadObserversForPeerMessage;
 use Webong\LaravelGouge\Runtime\LaravelAiRuntime;
 use Webong\LaravelGouge\Support\AgentAbilities;
-use Webong\LaravelGouge\Support\AgentUsers;
 use Webong\LaravelGouge\Support\Channels\Drivers\A2aChannelDriver;
 use Webong\LaravelGouge\Support\Channels\Drivers\AcpChannelDriver;
 use Webong\LaravelGouge\Support\Channels\Drivers\AiProviderChannelDriver;
@@ -67,9 +63,9 @@ class LaravelGougeServiceProvider extends ServiceProvider
             config('token-abilities', []),
             AgentAbilities::descriptions(),
         ));
-        config()->set('auth.interactive_user_types', array_values(array_unique([
-            ...config('auth.interactive_user_types', []),
-            AgentUsers::Robot,
+        config()->set('figurate-auth.robot_default_abilities', array_values(array_unique([
+            ...config('figurate-auth.robot_default_abilities', []),
+            ...AgentAbilities::defaults(),
         ])));
         config()->set('ai', array_replace_recursive(
             config('ai', []),
@@ -102,9 +98,6 @@ class LaravelGougeServiceProvider extends ServiceProvider
         Event::listen(ThreadMessageDispatched::class, PrepareAgentMessage::class);
         Event::listen(PreparingThreadMessage::class, PrepareAgentMessageMetadata::class);
         Event::listen(RoutingNotificationChannels::class, RouteAgentNotification::class);
-        if (class_exists(AccountContextFactory::class)) {
-            Event::listen(RobotProvisioned::class, AttachProvisionedRobotToRequestedAccount::class);
-        }
         Event::listen(ConversationThreadCreated::class, ConfigureAgentConversationThread::class);
         Event::listen(PreparingMessageResponse::class, DecorateAgentMessageResponse::class);
         Event::listen(PreparingResourcePayload::class, AddAgentContextToResourcePayload::class);

@@ -7,6 +7,7 @@ use App\Models\Server\SpaceActorState;
 use App\Models\Server\ThreadEvent;
 use App\Models\Server\User;
 use Database\Factories\SpaceFactory;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
@@ -14,7 +15,6 @@ use Tests\TestCase;
 use Webong\LaravelGouge\Ai\Support\A2a\A2aMethodRouter;
 use Webong\LaravelGouge\Contracts\AgentRuntime;
 use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\AgentUsers;
 use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
 
 class A2aTaskApiTest extends TestCase
@@ -27,7 +27,7 @@ class A2aTaskApiTest extends TestCase
             $mock->shouldReceive('submitTurn')->once();
         });
 
-        $user = $this->makeUser(AgentUsers::Robot);
+        $user = $this->makeUser(RobotUsers::Robot);
         $space = $this->accessibleSpace($user);
 
         Sanctum::actingAs($user, [

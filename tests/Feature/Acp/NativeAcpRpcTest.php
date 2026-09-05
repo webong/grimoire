@@ -6,13 +6,13 @@ use App\Models\Server\Space;
 use App\Models\Server\SpaceActorState;
 use App\Models\Server\Thread;
 use App\Models\Server\User;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
 use Tests\TestCase;
 use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Support\AgentUsers;
 
 class NativeAcpRpcTest extends TestCase
 {
@@ -179,7 +179,7 @@ class NativeAcpRpcTest extends TestCase
             'name' => 'Native ACP Tester',
             'email' => fake()->unique()->safeEmail(),
             'password' => 'password',
-            'type' => AgentUsers::Robot,
+            'type' => RobotUsers::Robot,
             'status' => 'active',
         ]);
 

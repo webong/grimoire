@@ -11,7 +11,6 @@ use Webong\LaravelGouge\Http\Controllers\Api\Acp\SessionController as AcpSession
 use Webong\LaravelGouge\Http\Controllers\Api\Acp\TaskController as AcpTaskController;
 use Webong\LaravelGouge\Http\Controllers\Api\FormTurnsController;
 use Webong\LaravelGouge\Http\Controllers\Api\PostInvocationController;
-use Webong\LaravelGouge\Http\Controllers\Api\RobotUserController;
 use Webong\LaravelGouge\Http\Controllers\Api\TaskController;
 use Webong\LaravelGouge\Http\Middleware\EnsureA2aEnabled;
 use Webong\LaravelGouge\Http\Middleware\EnsureA2aRpcAbility;
@@ -24,12 +23,6 @@ Route::prefix('posts')->middleware(['auth:sanctum,passport'])->group(function ()
     Route::post('/{post}/invocations', [PostInvocationController::class, 'store'])
         ->middleware(['api.ability:forms:submit', 'api.idempotent'])
         ->name('api.posts.invocations.store');
-});
-
-Route::prefix('users')->middleware(['auth:sanctum,passport'])->group(function (): void {
-    Route::post('/', [RobotUserController::class, 'store'])
-        ->middleware(EnsureTransportUser::class.':subject')
-        ->name('api.users.store');
 });
 
 Route::prefix('tasks')->middleware(['auth:sanctum,passport'])->group(function (): void {

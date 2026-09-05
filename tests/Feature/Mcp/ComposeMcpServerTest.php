@@ -11,6 +11,7 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadRelation;
 use App\Models\Server\User;
 use Database\Factories\SpaceFactory;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Laravel\Mcp\Server\Registrar;
@@ -30,7 +31,6 @@ use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\TransferThreadSessionTool;
 use Webong\LaravelGouge\Models\Server\AgentConversation;
 use Webong\LaravelGouge\Models\Server\ThreadActorSession;
 use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentUsers;
 
 class ComposeMcpServerTest extends TestCase
 {
@@ -46,7 +46,7 @@ class ComposeMcpServerTest extends TestCase
 
     public function test_it_lists_only_accessible_spaces(): void
     {
-        $user = $this->makeUser(AgentUsers::Robot);
+        $user = $this->makeUser(RobotUsers::Robot);
         $visibleSpace = $this->accessibleSpace($user);
         SpaceFactory::new()->create();
 

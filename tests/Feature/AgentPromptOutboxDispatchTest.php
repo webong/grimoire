@@ -13,6 +13,7 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadEvent;
 use App\Models\Server\User;
 use App\TokenAbility;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
@@ -21,7 +22,6 @@ use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
 use Webong\LaravelGouge\Features\Actions\Chat\EnqueueThreadPromptOutbox;
 use Webong\LaravelGouge\Features\Actions\Chat\Protocols\AgentPromptProtocol;
 use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentUsers;
 
 class AgentPromptOutboxDispatchTest extends TestCase
 {
@@ -33,7 +33,7 @@ class AgentPromptOutboxDispatchTest extends TestCase
 
         $sender = User::factory()->create();
         $robot = User::factory()->create([
-            'type' => AgentUsers::Robot,
+            'type' => RobotUsers::Robot,
         ]);
         $space = Space::factory()->create();
         $thread = $space->threads()->create([
@@ -149,7 +149,7 @@ class AgentPromptOutboxDispatchTest extends TestCase
         Queue::fake();
 
         $recipient = User::factory()->create([
-            'type' => AgentUsers::Robot,
+            'type' => RobotUsers::Robot,
         ]);
         $sender = User::factory()->create();
         $space = Space::factory()->create();

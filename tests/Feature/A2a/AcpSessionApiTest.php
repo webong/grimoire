@@ -10,6 +10,7 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadEvent;
 use App\Models\Server\User;
 use Database\Factories\SpaceFactory;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Laravel\Sanctum\Sanctum;
@@ -18,7 +19,6 @@ use Tests\TestCase;
 use Webong\LaravelGouge\Contracts\AgentRuntime;
 use Webong\LaravelGouge\Support\AgentActors;
 use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\AgentUsers;
 use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
 
 class AcpSessionApiTest extends TestCase
@@ -27,7 +27,7 @@ class AcpSessionApiTest extends TestCase
 
     public function test_it_creates_lists_and_loads_acp_sessions(): void
     {
-        $user = $this->makeUser(AgentUsers::Robot);
+        $user = $this->makeUser(RobotUsers::Robot);
         $space = $this->accessibleSpace($user);
 
         Sanctum::actingAs($user, ['acp:use']);
@@ -94,7 +94,7 @@ class AcpSessionApiTest extends TestCase
             $mock->shouldReceive('submitTurn')->once();
         });
 
-        $user = $this->makeUser(AgentUsers::Robot);
+        $user = $this->makeUser(RobotUsers::Robot);
         $space = $this->accessibleSpace($user);
 
         Sanctum::actingAs($user, ['acp:use']);
@@ -157,7 +157,7 @@ class AcpSessionApiTest extends TestCase
 
     public function test_an_agent_user_can_access_acp_with_passport_authentication(): void
     {
-        $user = $this->makeUser(AgentUsers::Robot);
+        $user = $this->makeUser(RobotUsers::Robot);
         $space = $this->accessibleSpace($user);
 
         Passport::actingAs($user, ['acp:use'], 'passport');

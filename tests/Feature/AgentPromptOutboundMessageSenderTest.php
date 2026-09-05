@@ -8,6 +8,7 @@ use App\Models\Server\Space;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
+use Figurate\Auth\Support\RobotUsers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -18,7 +19,6 @@ use Webong\LaravelGouge\Features\Actions\Chat\Protocols\AgentPromptProtocol;
 use Webong\LaravelGouge\Runtime\AgentRuntimeCorrelation;
 use Webong\LaravelGouge\Runtime\AgentTurn;
 use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentUsers;
 
 class AgentPromptOutboundMessageSenderTest extends TestCase
 {
@@ -27,7 +27,7 @@ class AgentPromptOutboundMessageSenderTest extends TestCase
     public function test_it_submits_a_runtime_neutral_turn_from_an_agent_prompt_outbox_record(): void
     {
         $recipient = User::factory()->create([
-            'type' => AgentUsers::Robot,
+            'type' => RobotUsers::Robot,
         ]);
         $sender = User::factory()->create();
         $space = Space::factory()->create();

@@ -6,17 +6,17 @@ use App\Events\Server\Notifications\RoutingNotificationChannels;
 use App\Models\Server\Post;
 use App\Models\Server\User;
 use App\Notifications\Channels\CoordinationChannel;
+use Figurate\Auth\Support\RobotUsers;
 use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
 use Webong\LaravelGouge\Notifications\Channels\CompletionChannel;
 use Webong\LaravelGouge\Notifications\Channels\ContinuationChannel;
 use Webong\LaravelGouge\Notifications\Channels\ThreadCoordinationChannel;
-use Webong\LaravelGouge\Support\AgentUsers;
 
 class RouteAgentNotification
 {
     public function handle(RoutingNotificationChannels $event): void
     {
-        if (! $event->notifiable instanceof User || ! AgentUsers::isRobot($event->notifiable)) {
+        if (! $event->notifiable instanceof User || ! RobotUsers::isRobot($event->notifiable)) {
             return;
         }
 
