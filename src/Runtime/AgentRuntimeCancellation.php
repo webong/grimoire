@@ -1,0 +1,13 @@
+<?php
+
+namespace Webong\LaravelGouge\Runtime;
+
+final readonly class AgentRuntimeCancellation
+{
+    public function __construct(
+        public AgentRuntimeCorrelation $correlation,
+        public bool $accepted,
+        public bool $interrupted,
+        public ?string $reason = null,
+    ) {}
+}

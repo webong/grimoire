@@ -1,0 +1,22 @@
+{
+  "observer": "safety_guard",
+  "source": "observer_skill.safety_guard",
+  "rules": {
+    "blocked_keywords": [
+      "credit card",
+      "card number",
+      "cvv",
+      "otp",
+      "one time password",
+      "social security number"
+    ],
+    "flagged_keywords": [
+      "whatsapp",
+      "telegram",
+      "pay outside",
+      "off platform",
+      "bank transfer",
+      "send money directly"
+    ]
+  }
+}
