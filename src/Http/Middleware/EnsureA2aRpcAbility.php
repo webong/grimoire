@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Middleware;
+namespace Webong\Gouge\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

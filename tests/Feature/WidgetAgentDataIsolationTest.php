@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Space;
 use App\Models\Server\SpaceActorState;
@@ -11,10 +11,10 @@ use App\Models\Server\UserClient;
 use Figurate\AccountManager\Models\Account;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Webong\LaravelGouge\Models\Server\AgentConversation;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Models\Server\AgentConversation;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
 
 class WidgetAgentDataIsolationTest extends TestCase
 {

@@ -1,29 +1,29 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Servers;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Servers;
 
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
 use Laravel\Mcp\Server\Attributes\Version;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Prompts\PlanSpaceWorkPrompt;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Prompts\SummarizeThreadPrompt;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Resources\ComposeServerGuideResource;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Resources\SpaceResource;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Resources\ThreadResource;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\AssignThreadActorTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreateGraphEdgeTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreatePostTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreateThreadTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ListPostsTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ListSpacesTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ListThreadActorsTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ListThreadsTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\QueryGraphEdgesTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ReadSpaceTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ReadThreadTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\SearchConversationContextTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\TransferThreadSessionTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Prompts\PlanSpaceWorkPrompt;
+use Webong\Gouge\Ai\Gateways\Mcp\Prompts\SummarizeThreadPrompt;
+use Webong\Gouge\Ai\Gateways\Mcp\Resources\ComposeServerGuideResource;
+use Webong\Gouge\Ai\Gateways\Mcp\Resources\SpaceResource;
+use Webong\Gouge\Ai\Gateways\Mcp\Resources\ThreadResource;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\AssignThreadActorTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreateGraphEdgeTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreatePostTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreateThreadTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ListPostsTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ListSpacesTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ListThreadActorsTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ListThreadsTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\QueryGraphEdgesTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ReadSpaceTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ReadThreadTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\SearchConversationContextTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\TransferThreadSessionTool;
 
 #[Name('Compose Server')]
 #[Version('0.0.1')]

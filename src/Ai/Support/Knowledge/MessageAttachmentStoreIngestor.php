@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Knowledge;
+namespace Webong\Gouge\Ai\Support\Knowledge;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;

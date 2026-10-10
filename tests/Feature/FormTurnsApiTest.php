@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Models\Server\AgentConversation;
-use Webong\LaravelGouge\Models\Server\AgentConversationMessage;
+use Webong\Gouge\Models\Server\AgentConversation;
+use Webong\Gouge\Models\Server\AgentConversationMessage;
 
 class FormTurnsApiTest extends TestCase
 {

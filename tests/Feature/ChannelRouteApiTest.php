@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Channel;
 use App\Models\Server\ChannelAddress;
@@ -15,7 +15,7 @@ use App\TokenAbility;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class ChannelRouteApiTest extends TestCase
 {

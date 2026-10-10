@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Storage;
+namespace Webong\Gouge\Ai\Storage;
 
 use Illuminate\Support\Collection;
 use Laravel\Ai\Contracts\ConversationStore;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Resources;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Resources;
 
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;

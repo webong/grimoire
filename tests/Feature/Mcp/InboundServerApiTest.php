@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\Mcp;
+namespace Webong\Gouge\Tests\Feature\Mcp;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Space;
@@ -11,7 +11,7 @@ use App\TokenAbility;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentChannels;
 
 class InboundServerApiTest extends TestCase
 {

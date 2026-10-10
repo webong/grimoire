@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webong\LaravelGouge\Http\Procedures;
+namespace Webong\Gouge\Http\Procedures;
 
 use Illuminate\Http\Request;
 use Sajya\Server\Exceptions\RuntimeRpcException;
 use Sajya\Server\Procedure;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aMethodRouter;
+use Webong\Gouge\Ai\Support\A2a\A2aMethodRouter;
 
 class A2aProcedure extends Procedure
 {

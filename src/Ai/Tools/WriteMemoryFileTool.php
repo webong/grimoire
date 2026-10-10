@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -9,10 +9,10 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
-use Webong\LaravelGouge\Ai\Support\Knowledge\KnowledgeStoreManager;
-use Webong\LaravelGouge\Ai\Support\Knowledge\StoreDocumentIndexer;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Ai\Support\Knowledge\KnowledgeStoreManager;
+use Webong\Gouge\Ai\Support\Knowledge\StoreDocumentIndexer;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
 
 class WriteMemoryFileTool implements Tool
 {

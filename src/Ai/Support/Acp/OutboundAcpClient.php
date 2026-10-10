@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Acp;
+namespace Webong\Gouge\Ai\Support\Acp;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;

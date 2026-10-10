@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Webhooks;
+namespace Webong\Gouge\Support\Webhooks;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;

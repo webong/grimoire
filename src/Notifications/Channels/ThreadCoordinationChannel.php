@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Notifications\Channels;
+namespace Webong\Gouge\Notifications\Channels;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
@@ -9,7 +9,7 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadEvent;
 use App\Models\Server\User;
 use Illuminate\Notifications\Notification;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Support\AgentEvents;
 
 class ThreadCoordinationChannel
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadEvent;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Support\AgentEvents;
 
 class RecordConversationOperationEvents
 {

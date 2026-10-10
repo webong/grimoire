@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Observer;
+namespace Webong\Gouge\Ai\Support\Observer;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
-use Webong\LaravelGouge\Ai\Support\Observer\Contracts\ObserverSkill;
-use Webong\LaravelGouge\Ai\Tools\SafetyGuardObserver;
-use Webong\LaravelGouge\Repositories\Ai\ObserverSkillRepository;
+use Webong\Gouge\Ai\Support\Observer\Contracts\ObserverSkill;
+use Webong\Gouge\Ai\Tools\SafetyGuardObserver;
+use Webong\Gouge\Repositories\Ai\ObserverSkillRepository;
 
 class ObserverRegistry
 {

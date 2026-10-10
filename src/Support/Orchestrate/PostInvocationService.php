@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Orchestrate;
+namespace Webong\Gouge\Support\Orchestrate;
 
 use App\Features\Actions\Chat\ResolveConversationThreadContext;
 use App\Models\Server\Channel;
@@ -14,9 +14,9 @@ use App\Support\Channels\ChannelApiResolver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use JsonException;
-use Webong\LaravelGouge\Features\Operations\Chat\DispatchPromptOperation;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Features\Operations\Chat\DispatchPromptOperation;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentChannels;
 
 class PostInvocationService
 {

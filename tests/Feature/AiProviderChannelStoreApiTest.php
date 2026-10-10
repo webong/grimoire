@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Channel;
 use App\Models\Server\User;
@@ -8,7 +8,7 @@ use App\TokenAbility;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentChannels;
 
 class AiProviderChannelStoreApiTest extends TestCase
 {

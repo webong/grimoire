@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;

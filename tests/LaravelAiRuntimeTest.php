@@ -1,7 +1,8 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests;
+namespace Webong\Gouge\Tests;
 
+use App\Coordination\WorkExchange\ParticipantEndpointRegistry;
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -9,10 +10,11 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Runtime\AgentTurn;
-use Webong\LaravelGouge\Runtime\LaravelAiRuntime;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Coordination\GougeBridge;
+use Webong\Gouge\Runtime\AgentTurn;
+use Webong\Gouge\Runtime\LaravelAiRuntime;
+use Webong\Gouge\Support\AgentActors;
 
 class LaravelAiRuntimeTest extends TestCase
 {
@@ -21,7 +23,7 @@ class LaravelAiRuntimeTest extends TestCase
     public function test_the_adapter_owns_the_laravel_ai_dependency(): void
     {
         $rootComposer = json_decode((string) file_get_contents(base_path('composer.json')), true, flags: JSON_THROW_ON_ERROR);
-        $adapterComposer = json_decode((string) file_get_contents(base_path('ext/laravel-gouge/composer.json')), true, flags: JSON_THROW_ON_ERROR);
+        $adapterComposer = json_decode((string) file_get_contents(base_path('ext/gouge/composer.json')), true, flags: JSON_THROW_ON_ERROR);
 
         $this->assertArrayNotHasKey('laravel/ai', $rootComposer['require']);
         $this->assertSame('^0.10.1', $adapterComposer['require']['laravel/ai']);
@@ -30,6 +32,14 @@ class LaravelAiRuntimeTest extends TestCase
     public function test_it_registers_as_the_optional_agent_runtime(): void
     {
         $this->assertInstanceOf(LaravelAiRuntime::class, $this->app->make(AgentRuntime::class));
+    }
+
+    public function test_it_registers_as_a_figurate_participant_endpoint_bridge(): void
+    {
+        $bridge = $this->app->make(ParticipantEndpointRegistry::class)
+            ->bridge(GougeBridge::Key);
+
+        $this->assertInstanceOf(GougeBridge::class, $bridge);
     }
 
     public function test_it_builds_stable_runtime_correlation_from_a_figurate_turn(): void

@@ -1,11 +1,11 @@
 <?php
 
-namespace Webong\LaravelGouge\Contracts;
+namespace Webong\Gouge\Contracts;
 
-use Webong\LaravelGouge\Runtime\AgentRuntimeCancellation;
-use Webong\LaravelGouge\Runtime\AgentRuntimeCorrelation;
-use Webong\LaravelGouge\Runtime\AgentRuntimeEvent;
-use Webong\LaravelGouge\Runtime\AgentTurn;
+use Webong\Gouge\Runtime\AgentRuntimeCancellation;
+use Webong\Gouge\Runtime\AgentRuntimeCorrelation;
+use Webong\Gouge\Runtime\AgentRuntimeEvent;
+use Webong\Gouge\Runtime\AgentTurn;
 
 interface AgentRuntime
 {

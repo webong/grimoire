@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Storage\Strategies;
+namespace Webong\Gouge\Ai\Storage\Strategies;
 
 use App\Models\Server\Post as ThreadMessageModel;
 use Illuminate\Contracts\Support\Arrayable;
@@ -13,8 +13,8 @@ use Laravel\Ai\Prompts\AgentPrompt;
 use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\Data\ToolResult;
 use Laravel\Ai\Storage\DatabaseConversationStore;
-use Webong\LaravelGouge\Ai\Storage\Contracts\ThreadConversationPersistence;
-use Webong\LaravelGouge\Ai\Storage\Strategies\Concerns\InteractsWithThreadActorSessions;
+use Webong\Gouge\Ai\Storage\Contracts\ThreadConversationPersistence;
+use Webong\Gouge\Ai\Storage\Strategies\Concerns\InteractsWithThreadActorSessions;
 
 class ThreadContinuationPersistence implements ThreadConversationPersistence
 {

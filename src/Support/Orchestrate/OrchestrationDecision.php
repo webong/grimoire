@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Orchestrate;
+namespace Webong\Gouge\Support\Orchestrate;
 
 use App\Models\Server\Thread;
 

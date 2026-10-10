@@ -1,16 +1,16 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Channel;
 use App\Support\Channels\ChannelDriverRegistry;
 use App\Support\Channels\Drivers\GenericChannelDriver;
 use InvalidArgumentException;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentChannels;
-use Webong\LaravelGouge\Support\Channels\Drivers\A2aChannelDriver;
-use Webong\LaravelGouge\Support\Channels\Drivers\AcpChannelDriver;
-use Webong\LaravelGouge\Support\Channels\Drivers\McpChannelDriver;
+use Webong\Gouge\Support\AgentChannels;
+use Webong\Gouge\Support\Channels\Drivers\A2aChannelDriver;
+use Webong\Gouge\Support\Channels\Drivers\AcpChannelDriver;
+use Webong\Gouge\Support\Channels\Drivers\McpChannelDriver;
 
 class ChannelDriverRegistryTest extends TestCase
 {

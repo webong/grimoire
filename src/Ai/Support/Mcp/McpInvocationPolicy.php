@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp;
+namespace Webong\Gouge\Ai\Support\Mcp;
 
 use App\Models\Server\Thread;
 use App\Models\Server\User;

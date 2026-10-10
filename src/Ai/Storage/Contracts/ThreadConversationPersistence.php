@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Storage\Contracts;
+namespace Webong\Gouge\Ai\Storage\Contracts;
 
 use Illuminate\Support\Collection;
 use Laravel\Ai\Messages\Message;

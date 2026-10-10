@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
@@ -11,10 +11,10 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
 use Throwable;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpInvocationPolicy;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpServerClient;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Ai\Support\Mcp\McpInvocationPolicy;
+use Webong\Gouge\Ai\Support\Mcp\McpServerClient;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Support\AgentEvents;
 
 class InvokeMcpTool implements Tool
 {

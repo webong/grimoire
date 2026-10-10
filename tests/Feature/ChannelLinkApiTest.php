@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -13,8 +13,8 @@ use App\TokenAbility;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpRegistry;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\Mcp\McpRegistry;
+use Webong\Gouge\Support\AgentChannels;
 
 class ChannelLinkApiTest extends TestCase
 {

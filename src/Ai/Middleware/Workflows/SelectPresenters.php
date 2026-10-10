@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Workflows;
+namespace Webong\Gouge\Ai\Middleware\Workflows;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use Closure;
 use Laravel\Ai\Prompts\AgentPrompt;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class SelectPresenters
 {

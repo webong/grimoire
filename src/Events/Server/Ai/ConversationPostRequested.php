@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Events\Server\Ai;
+namespace Webong\Gouge\Events\Server\Ai;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;

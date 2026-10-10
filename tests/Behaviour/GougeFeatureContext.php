@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Behaviour;
+namespace Webong\Gouge\Tests\Behaviour;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -15,9 +15,9 @@ use Laravel\Ai\Gateway\FakeTextGateway;
 use Laravel\Ai\Gateway\OpenAi\OpenAiGateway;
 use Laravel\Ai\Providers\OpenAiProvider;
 use Tests\Behaviour\Contexts\FeatureContext;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
-class LaravelGougeFeatureContext extends FeatureContext
+class GougeFeatureContext extends FeatureContext
 {
     protected ?string $originalAiProvider = null;
 

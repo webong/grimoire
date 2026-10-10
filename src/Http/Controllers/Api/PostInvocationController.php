@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api;
+namespace Webong\Gouge\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\Post;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
-use Webong\LaravelGouge\Http\Requests\Server\Post\InvokePostRequest;
-use Webong\LaravelGouge\Support\Orchestrate\PostInvocationService;
+use Webong\Gouge\Http\Requests\Server\Post\InvokePostRequest;
+use Webong\Gouge\Support\Orchestrate\PostInvocationService;
 
 class PostInvocationController extends Controller
 {

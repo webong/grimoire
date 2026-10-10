@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\Acp;
+namespace Webong\Gouge\Tests\Feature\Acp;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Space;
@@ -13,12 +13,12 @@ use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Tools\DelegateAcpTaskTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeAcpAgentTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableAcpAgentsTool;
-use Webong\LaravelGouge\Support\AgentChannels;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Ai\Tools\DelegateAcpTaskTool;
+use Webong\Gouge\Ai\Tools\InvokeAcpAgentTool;
+use Webong\Gouge\Ai\Tools\ListAvailableAcpAgentsTool;
+use Webong\Gouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
 
 class OutboundAcpToolsTest extends TestCase
 {

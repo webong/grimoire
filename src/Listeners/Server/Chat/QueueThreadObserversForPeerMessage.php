@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners\Server\Chat;
+namespace Webong\Gouge\Listeners\Server\Chat;
 
 use App\Events\Server\Chat\ThreadMessageDispatched;
 use App\Models\Server\Thread;
-use Webong\LaravelGouge\Jobs\ProcessThreadObservers;
+use Webong\Gouge\Jobs\ProcessThreadObservers;
 
 class QueueThreadObserversForPeerMessage
 {

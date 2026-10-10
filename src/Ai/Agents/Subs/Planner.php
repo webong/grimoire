@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Agents\Subs;
+namespace Webong\Gouge\Ai\Agents\Subs;
 
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Promptable;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Tools;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Tools;
 
 use App\Models\Server\Thread;
 use Gate;
@@ -9,7 +9,7 @@ use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
 use Laravel\Mcp\Server\Tool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
+use Webong\Gouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
 
 #[Description('List threads, optionally scoped to a space.')]
 class ListThreadsTool extends Tool

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp;
+namespace Webong\Gouge\Ai\Support\Mcp;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;

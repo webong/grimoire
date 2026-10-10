@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Workflows;
+namespace Webong\Gouge\Ai\Middleware\Workflows;
 
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request as HttpRequest;
 use Laravel\Ai\Contracts\ConversationStore;
 use Laravel\Ai\Prompts\AgentPrompt;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Ai\Storage\ThreadConversationStore;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Ai\Storage\ThreadConversationStore;
 
 class UseThreadConversationStore
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\A2a;
+namespace Webong\Gouge\Http\Controllers\Api\A2a;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiCatalogRegistry;
+use Webong\Gouge\Ai\Support\A2ui\A2uiCatalogRegistry;
 
 class AgentCardController extends Controller
 {

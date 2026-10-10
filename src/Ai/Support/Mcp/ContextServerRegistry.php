@@ -1,11 +1,11 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp;
+namespace Webong\Gouge\Ai\Support\Mcp;
 
 use App\Models\Server\Channel;
 use App\Support\Channels\ChannelRegistry;
 use Illuminate\Database\Eloquent\Model;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentChannels;
 
 class ContextServerRegistry
 {

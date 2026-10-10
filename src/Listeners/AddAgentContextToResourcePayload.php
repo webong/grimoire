@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Api\PreparingResourcePayload;
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
-use Webong\LaravelGouge\Features\Actions\Chat\ProjectMessageExtra;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveNodeInvocation;
+use Webong\Gouge\Features\Actions\Chat\ProjectMessageExtra;
+use Webong\Gouge\Features\Actions\Chat\ResolveNodeInvocation;
 
 class AddAgentContextToResourcePayload
 {

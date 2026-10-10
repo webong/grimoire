@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Runtime;
+namespace Webong\Gouge\Runtime;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 final readonly class AgentTurn
 {

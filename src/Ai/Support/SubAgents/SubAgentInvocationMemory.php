@@ -1,11 +1,11 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\SubAgents;
+namespace Webong\Gouge\Ai\Support\SubAgents;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Models\Server\ThreadActorSession;
 
 class SubAgentInvocationMemory
 {

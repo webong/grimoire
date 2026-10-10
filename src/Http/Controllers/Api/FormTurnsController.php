@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api;
+namespace Webong\Gouge\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Webong\LaravelGouge\Features\Actions\Chat\ProjectInvocationTurns;
+use Webong\Gouge\Features\Actions\Chat\ProjectInvocationTurns;
 
 class FormTurnsController extends Controller
 {

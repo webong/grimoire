@@ -1,8 +1,8 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp\Handlers;
+namespace Webong\Gouge\Ai\Support\Mcp\Handlers;
 
-use Webong\LaravelGouge\Ai\Support\Mcp\Contracts\McpServerHandler;
+use Webong\Gouge\Ai\Support\Mcp\Contracts\McpServerHandler;
 
 class NullMcpServerHandler implements McpServerHandler
 {

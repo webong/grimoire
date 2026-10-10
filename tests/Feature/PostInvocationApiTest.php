@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -16,12 +16,12 @@ use App\TokenAbility;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Runtime\AgentTurn;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentChannels;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Runtime\AgentTurn;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
 
 class PostInvocationApiTest extends TestCase
 {

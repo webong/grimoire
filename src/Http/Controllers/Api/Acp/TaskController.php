@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\Acp;
+namespace Webong\Gouge\Http\Controllers\Api\Acp;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Webong\LaravelGouge\Support\Acp\AcpSessionService;
+use Webong\Gouge\Support\Acp\AcpSessionService;
 
 class TaskController extends Controller
 {

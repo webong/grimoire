@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -13,12 +13,12 @@ use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use Stringable;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentDispatcher;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
-use Webong\LaravelGouge\Models\Server\AgentConversationMessage;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentDispatcher;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Models\Server\AgentConversationMessage;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentEvents;
 
 class InvokeSubAgentTool implements Tool
 {

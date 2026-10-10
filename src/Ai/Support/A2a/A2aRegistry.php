@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\A2a;
+namespace Webong\Gouge\Ai\Support\A2a;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -10,8 +10,8 @@ use App\Support\Channels\ChannelLinkRepository;
 use App\Support\Security\UrlTrustPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Support\AgentChannels;
 
 class A2aRegistry
 {

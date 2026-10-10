@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Post;
 use Tests\TestCase;
-use Webong\LaravelGouge\Features\Actions\Chat\ProjectMessageExtra;
+use Webong\Gouge\Features\Actions\Chat\ProjectMessageExtra;
 
 class ProjectMessageExtraTest extends TestCase
 {

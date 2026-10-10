@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Chat\PreparingThreadMessage;
 use App\Models\Server\User;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
 
 class PrepareAgentMessageMetadata
 {

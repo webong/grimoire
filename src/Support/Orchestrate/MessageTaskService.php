@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Orchestrate;
+namespace Webong\Gouge\Support\Orchestrate;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class MessageTaskService
 {

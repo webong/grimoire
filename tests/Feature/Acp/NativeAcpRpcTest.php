@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\Acp;
+namespace Webong\Gouge\Tests\Feature\Acp;
 
 use App\Models\Server\Space;
 use App\Models\Server\SpaceActorState;
@@ -12,7 +12,7 @@ use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
+use Webong\Gouge\Contracts\AgentRuntime;
 
 class NativeAcpRpcTest extends TestCase
 {

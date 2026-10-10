@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use Throwable;
-use Webong\LaravelGouge\Ai\Agents\ObserverAgent;
-use Webong\LaravelGouge\Ai\Support\Observer\Contracts\ObserverSkill;
-use Webong\LaravelGouge\Ai\Support\Observer\ObserverResult;
+use Webong\Gouge\Ai\Agents\ObserverAgent;
+use Webong\Gouge\Ai\Support\Observer\Contracts\ObserverSkill;
+use Webong\Gouge\Ai\Support\Observer\ObserverResult;
 
 class SafetyGuardObserver implements ObserverSkill
 {

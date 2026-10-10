@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Tools\DiscoverSkillsTool;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Ai\Tools\DiscoverSkillsTool;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class DiscoverSkillsToolTest extends TestCase
 {

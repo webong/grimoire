@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Knowledge;
+namespace Webong\Gouge\Ai\Support\Knowledge;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
 
 class KnowledgeSearchStoreResolver
 {

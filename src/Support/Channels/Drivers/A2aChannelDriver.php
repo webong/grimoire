@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Channels\Drivers;
+namespace Webong\Gouge\Support\Channels\Drivers;
 
 use App\Models\Server\Channel;
 use App\Support\Channels\Drivers\GenericChannelDriver;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentChannels;
 
 class A2aChannelDriver extends GenericChannelDriver
 {

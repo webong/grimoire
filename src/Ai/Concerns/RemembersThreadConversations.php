@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Concerns;
+namespace Webong\Gouge\Ai\Concerns;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use Laravel\Ai\Concerns\RemembersConversations as LaravelRemembersConversations;
 use Laravel\Ai\Contracts\ConversationStore;
 use Laravel\Ai\Models\Conversation;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Support\AgentActors;
 
 trait RemembersThreadConversations
 {

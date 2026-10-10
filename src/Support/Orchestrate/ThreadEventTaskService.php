@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Orchestrate;
+namespace Webong\Gouge\Support\Orchestrate;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use RuntimeException;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Support\AgentEvents;
 
 class ThreadEventTaskService
 {

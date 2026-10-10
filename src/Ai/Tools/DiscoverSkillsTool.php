@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
-use Webong\LaravelGouge\Ai\Support\Skills\SkillRepository;
+use Webong\Gouge\Ai\Support\Skills\SkillRepository;
 
 class DiscoverSkillsTool implements Tool
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\A2a;
+namespace Webong\Gouge\Ai\Support\A2a;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -8,7 +8,7 @@ use App\Models\Server\ThreadEvent;
 use Illuminate\Support\Str;
 use Spatie\WebhookServer\WebhookCall;
 use Throwable;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Support\AgentEvents;
 
 class TaskPushNotificationDispatcher
 {

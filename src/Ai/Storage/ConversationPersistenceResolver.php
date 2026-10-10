@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Storage;
+namespace Webong\Gouge\Ai\Storage;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request as HttpRequest;
-use Webong\LaravelGouge\Ai\Storage\Contracts\ThreadConversationPersistence;
-use Webong\LaravelGouge\Ai\Storage\Strategies\ThreadCompletionPersistence;
-use Webong\LaravelGouge\Ai\Storage\Strategies\ThreadContinuationPersistence;
+use Webong\Gouge\Ai\Storage\Contracts\ThreadConversationPersistence;
+use Webong\Gouge\Ai\Storage\Strategies\ThreadCompletionPersistence;
+use Webong\Gouge\Ai\Storage\Strategies\ThreadContinuationPersistence;
 
 class ConversationPersistenceResolver
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp;
+namespace Webong\Gouge\Ai\Support\Mcp;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -9,8 +9,8 @@ use App\Models\Server\User;
 use App\Support\Channels\ChannelLinkRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Support\AgentChannels;
 
 class McpRegistry
 {

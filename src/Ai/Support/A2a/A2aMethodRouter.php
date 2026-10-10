@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\A2a;
+namespace Webong\Gouge\Ai\Support\A2a;
 
 use App\Contracts\Users\UserRepository;
 use App\Features\Actions\Chat\ResolveConversationSpaceContext;
@@ -12,13 +12,13 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiCatalogRegistry;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiPayloadContract;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Features\Operations\Chat\DispatchPromptOperation;
-use Webong\LaravelGouge\Support\Orchestrate\MessageTaskService;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Ai\Support\A2ui\A2uiCatalogRegistry;
+use Webong\Gouge\Ai\Support\A2ui\A2uiPayloadContract;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Features\Operations\Chat\DispatchPromptOperation;
+use Webong\Gouge\Support\Orchestrate\MessageTaskService;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class A2aMethodRouter
 {

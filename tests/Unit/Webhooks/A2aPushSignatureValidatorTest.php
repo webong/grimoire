@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit\Webhooks;
+namespace Webong\Gouge\Tests\Unit\Webhooks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -9,8 +9,8 @@ use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile;
 use Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo;
 use Tests\TestCase;
-use Webong\LaravelGouge\Jobs\ProcessInboundA2aPushWebhookJob;
-use Webong\LaravelGouge\Support\Webhooks\A2aPushSignatureValidator;
+use Webong\Gouge\Jobs\ProcessInboundA2aPushWebhookJob;
+use Webong\Gouge\Support\Webhooks\A2aPushSignatureValidator;
 
 class A2aPushSignatureValidatorTest extends TestCase
 {

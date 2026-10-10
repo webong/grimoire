@@ -1,18 +1,18 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\SubAgents;
+namespace Webong\Gouge\Ai\Support\SubAgents;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Laravel\Ai\Contracts\Agent;
 use Stringable;
 use Throwable;
-use Webong\LaravelGouge\Ai\Agents\Subs\Browser;
-use Webong\LaravelGouge\Ai\Agents\Subs\Developer;
-use Webong\LaravelGouge\Ai\Agents\Subs\Explorer;
-use Webong\LaravelGouge\Ai\Agents\Subs\Manager;
-use Webong\LaravelGouge\Ai\Agents\Subs\Planner;
-use Webong\LaravelGouge\Ai\Agents\Subs\Researcher;
+use Webong\Gouge\Ai\Agents\Subs\Browser;
+use Webong\Gouge\Ai\Agents\Subs\Developer;
+use Webong\Gouge\Ai\Agents\Subs\Explorer;
+use Webong\Gouge\Ai\Agents\Subs\Manager;
+use Webong\Gouge\Ai\Agents\Subs\Planner;
+use Webong\Gouge\Ai\Agents\Subs\Researcher;
 
 class SubAgentDispatcher
 {

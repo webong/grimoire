@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Tools;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Tools;
 
 use App\Support\Graph\GraphEdgeExplorer;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
@@ -8,7 +8,7 @@ use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
 use Laravel\Mcp\Server\Tool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
+use Webong\Gouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
 
 #[Description('Create a semantic graph edge between spaces, threads, and posts without changing their node hierarchy.')]
 class CreateGraphEdgeTool extends Tool

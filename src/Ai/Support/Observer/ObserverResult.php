@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Observer;
+namespace Webong\Gouge\Ai\Support\Observer;
 
 class ObserverResult
 {

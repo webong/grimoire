@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Models\Server;
+namespace Webong\Gouge\Models\Server;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Observer\Contracts;
+namespace Webong\Gouge\Ai\Support\Observer\Contracts;
 
-use Webong\LaravelGouge\Ai\Support\Observer\ObserverResult;
+use Webong\Gouge\Ai\Support\Observer\ObserverResult;
 
 interface ObserverSkill
 {

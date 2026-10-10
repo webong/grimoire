@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class EnsureThreadPresenter
 {

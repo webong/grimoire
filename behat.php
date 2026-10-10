@@ -5,11 +5,11 @@ declare(strict_types=1);
 use Behat\Config\Config;
 use Behat\Config\Profile;
 use Behat\Config\Suite;
-use Webong\LaravelGouge\Tests\Behaviour\LaravelGougeFeatureContext;
+use Webong\Gouge\Tests\Behaviour\GougeFeatureContext;
 
-$behaviourSuite = (new Suite('laravel_gouge'))
+$behaviourSuite = (new Suite('gouge'))
     ->withPaths('%paths.base%/tests/Behaviour/Features')
-    ->withContexts(LaravelGougeFeatureContext::class);
+    ->withContexts(GougeFeatureContext::class);
 
 return (new Config)
     ->withProfile(

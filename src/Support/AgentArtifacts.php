@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support;
+namespace Webong\Gouge\Support;
 
 final class AgentArtifacts
 {

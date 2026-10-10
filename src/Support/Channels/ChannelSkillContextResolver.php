@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Channels;
+namespace Webong\Gouge\Support\Channels;
 
 use App\Models\Server\Channel;
 use App\Models\Server\ChannelAddress;
@@ -9,8 +9,8 @@ use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
 use Illuminate\Database\Eloquent\Model;
-use Webong\LaravelGouge\Ai\Support\Skills\SkillRepository;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Ai\Support\Skills\SkillRepository;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class ChannelSkillContextResolver
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Tools;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
 use Laravel\Mcp\Server\Tool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
+use Webong\Gouge\Models\Server\ThreadActorSession;
 
 #[Description('Transfer a stored conversation session from one user to another within a thread.')]
 class TransferThreadSessionTool extends Tool

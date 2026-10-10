@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Space;
@@ -9,8 +9,8 @@ use App\Models\Server\User;
 use App\Support\Channels\ChannelLinkRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpRegistry;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\Mcp\McpRegistry;
+use Webong\Gouge\Support\AgentChannels;
 
 class McpRegistryTest extends TestCase
 {

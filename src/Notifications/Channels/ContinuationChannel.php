@@ -1,11 +1,11 @@
 <?php
 
-namespace Webong\LaravelGouge\Notifications\Channels;
+namespace Webong\Gouge\Notifications\Channels;
 
 use Illuminate\Notifications\Channels\DatabaseChannel;
 use Illuminate\Notifications\Notification;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Notifications\Support\ThreadPromptTransport;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Notifications\Support\ThreadPromptTransport;
 
 class ContinuationChannel
 {

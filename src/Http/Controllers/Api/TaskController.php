@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api;
+namespace Webong\Gouge\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Webong\LaravelGouge\Support\Orchestrate\PostInvocationService;
+use Webong\Gouge\Support\Orchestrate\PostInvocationService;
 
 class TaskController extends Controller
 {

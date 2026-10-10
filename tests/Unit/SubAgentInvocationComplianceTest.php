@@ -1,16 +1,16 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Thread;
 use App\Models\Server\User;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Tools\Request;
 use PHPUnit\Framework\TestCase;
-use Webong\LaravelGouge\Ai\Agents\Subs\Planner;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentDispatcher;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
-use Webong\LaravelGouge\Ai\Tools\InvokeSubAgentTool;
+use Webong\Gouge\Ai\Agents\Subs\Planner;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentDispatcher;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
+use Webong\Gouge\Ai\Tools\InvokeSubAgentTool;
 
 class SubAgentInvocationComplianceTest extends TestCase
 {

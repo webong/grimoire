@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp\Contracts;
+namespace Webong\Gouge\Ai\Support\Mcp\Contracts;
 
 interface McpServerHandler
 {

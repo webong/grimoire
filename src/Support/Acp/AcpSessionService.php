@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Acp;
+namespace Webong\Gouge\Support\Acp;
 
 use App\Features\Actions\Chat\EnsureThreadMembership;
 use App\Models\Server\Post;
@@ -12,12 +12,12 @@ use App\Models\Server\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Features\Operations\Chat\DispatchPromptOperation;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\Orchestrate\MessageTaskService;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Features\Operations\Chat\DispatchPromptOperation;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\Orchestrate\MessageTaskService;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class AcpSessionService
 {

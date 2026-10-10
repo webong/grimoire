@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Auth\WidgetUsersMerging;
 use App\Models\Server\User;

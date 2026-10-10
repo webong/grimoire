@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Orchestrate;
+namespace Webong\Gouge\Support\Orchestrate;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class ResolveThreadInteractionMode
 {

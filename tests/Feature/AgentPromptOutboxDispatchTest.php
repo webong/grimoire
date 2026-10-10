@@ -1,7 +1,9 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
+use App\Coordination\WorkExchange\V1\WorkRequest;
+use App\Features\Actions\Chat\Protocols\WorkExchangeProtocol;
 use App\Jobs\DeliverOutboxMessage;
 use App\Models\Server\Inbox;
 use App\Models\Server\Outbox;
@@ -18,10 +20,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Features\Actions\Chat\EnqueueThreadPromptOutbox;
-use Webong\LaravelGouge\Features\Actions\Chat\Protocols\AgentPromptProtocol;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Coordination\GougeBridge;
+use Webong\Gouge\Features\Actions\Chat\EnqueueThreadPromptOutbox;
+use Webong\Gouge\Support\AgentActors;
 
 class AgentPromptOutboxDispatchTest extends TestCase
 {
@@ -107,19 +109,20 @@ class AgentPromptOutboxDispatchTest extends TestCase
         $outbox = Outbox::query()
             ->where('thread_id', $thread->id)
             ->where('post_id', $post->id)
-            ->where('protocol', AgentPromptProtocol::Key)
+            ->where('protocol', WorkExchangeProtocol::Key)
             ->first();
 
         $this->assertNotNull($outbox);
         $this->assertSame(Outbox::DirectionOutbound, $outbox->direction);
-        $this->assertSame('agent-runtime', $outbox->provider);
+        $this->assertSame(GougeBridge::Key, $outbox->provider);
         $this->assertSame(AgentActors::Coordinator, $outbox->target);
+        $this->assertSame(WorkRequest::Type, data_get($outbox->payload, 'type'));
         $this->assertSame(
             ConversationPersistenceResolver::ThreadCompletion,
-            data_get($outbox->payload, 'dispatch.conversation_persistence'),
+            data_get($outbox->payload, 'action.input.conversation_persistence'),
         );
-        $this->assertSame($robot->id, data_get($outbox->payload, 'dispatch.recipient_user_id'));
-        $this->assertSame($presenter->id, data_get($outbox->payload, 'dispatch.thread_actor_id'));
+        $this->assertSame($robot->id, data_get($outbox->payload, 'action.input.recipient_user_id'));
+        $this->assertSame((string) $presenter->id, data_get($outbox->payload, 'participant.id'));
 
         Queue::assertPushed(DeliverOutboxMessage::class, function (DeliverOutboxMessage $job) use ($outbox): bool {
             return $job->outboxId === $outbox->id;
@@ -135,7 +138,7 @@ class AgentPromptOutboxDispatchTest extends TestCase
         $this->assertSame('notification.space.completion', $event->operation);
         $this->assertSame('outbox_enqueued', data_get($event->payload, 'reason'));
         $this->assertSame($outbox->id, data_get($event->payload, 'outbox_id'));
-        $this->assertSame(AgentPromptProtocol::Key, data_get($event->payload, 'outbox_protocol'));
+        $this->assertSame(WorkExchangeProtocol::Key, data_get($event->payload, 'outbox_protocol'));
 
         $this->assertDatabaseMissing('inboxes', [
             'user_id' => $robot->id,

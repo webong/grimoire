@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support;
+namespace Webong\Gouge\Ai\Support;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -8,36 +8,36 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Providers\Tools\FileSearch;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aRegistry;
-use Webong\LaravelGouge\Ai\Support\Acp\AcpRegistry;
-use Webong\LaravelGouge\Ai\Support\Knowledge\KnowledgeSearchStoreResolver;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpRegistry;
-use Webong\LaravelGouge\Ai\Tools\AutoModeSelectorTool;
-use Webong\LaravelGouge\Ai\Tools\ContextBudgetTool;
-use Webong\LaravelGouge\Ai\Tools\ConversationAuditTool;
-use Webong\LaravelGouge\Ai\Tools\CreatePostFromConversationTool;
-use Webong\LaravelGouge\Ai\Tools\DelegateA2aTaskTool;
-use Webong\LaravelGouge\Ai\Tools\DelegateAcpTaskTool;
-use Webong\LaravelGouge\Ai\Tools\DiscoverSkillsTool;
-use Webong\LaravelGouge\Ai\Tools\DualWriteDiffTool;
-use Webong\LaravelGouge\Ai\Tools\GetSubAgentInvocationContextTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeA2aAgentTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeAcpAgentTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeMcpTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeSubAgentTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableA2aAgentsTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableAcpAgentsTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableMcpToolsTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableSubAgentsTool;
-use Webong\LaravelGouge\Ai\Tools\ModePolicyTool;
-use Webong\LaravelGouge\Ai\Tools\PrivacyGuardTool;
-use Webong\LaravelGouge\Ai\Tools\ReplayTool;
-use Webong\LaravelGouge\Ai\Tools\SessionForkTool;
-use Webong\LaravelGouge\Ai\Tools\SessionHealthTool;
-use Webong\LaravelGouge\Ai\Tools\SessionMergeSummaryTool;
-use Webong\LaravelGouge\Ai\Tools\SessionResetTool;
-use Webong\LaravelGouge\Ai\Tools\SessionTransferTool;
-use Webong\LaravelGouge\Ai\Tools\WriteMemoryFileTool;
+use Webong\Gouge\Ai\Support\A2a\A2aRegistry;
+use Webong\Gouge\Ai\Support\Acp\AcpRegistry;
+use Webong\Gouge\Ai\Support\Knowledge\KnowledgeSearchStoreResolver;
+use Webong\Gouge\Ai\Support\Mcp\McpRegistry;
+use Webong\Gouge\Ai\Tools\AutoModeSelectorTool;
+use Webong\Gouge\Ai\Tools\ContextBudgetTool;
+use Webong\Gouge\Ai\Tools\ConversationAuditTool;
+use Webong\Gouge\Ai\Tools\CreatePostFromConversationTool;
+use Webong\Gouge\Ai\Tools\DelegateA2aTaskTool;
+use Webong\Gouge\Ai\Tools\DelegateAcpTaskTool;
+use Webong\Gouge\Ai\Tools\DiscoverSkillsTool;
+use Webong\Gouge\Ai\Tools\DualWriteDiffTool;
+use Webong\Gouge\Ai\Tools\GetSubAgentInvocationContextTool;
+use Webong\Gouge\Ai\Tools\InvokeA2aAgentTool;
+use Webong\Gouge\Ai\Tools\InvokeAcpAgentTool;
+use Webong\Gouge\Ai\Tools\InvokeMcpTool;
+use Webong\Gouge\Ai\Tools\InvokeSubAgentTool;
+use Webong\Gouge\Ai\Tools\ListAvailableA2aAgentsTool;
+use Webong\Gouge\Ai\Tools\ListAvailableAcpAgentsTool;
+use Webong\Gouge\Ai\Tools\ListAvailableMcpToolsTool;
+use Webong\Gouge\Ai\Tools\ListAvailableSubAgentsTool;
+use Webong\Gouge\Ai\Tools\ModePolicyTool;
+use Webong\Gouge\Ai\Tools\PrivacyGuardTool;
+use Webong\Gouge\Ai\Tools\ReplayTool;
+use Webong\Gouge\Ai\Tools\SessionForkTool;
+use Webong\Gouge\Ai\Tools\SessionHealthTool;
+use Webong\Gouge\Ai\Tools\SessionMergeSummaryTool;
+use Webong\Gouge\Ai\Tools\SessionResetTool;
+use Webong\Gouge\Ai\Tools\SessionTransferTool;
+use Webong\Gouge\Ai\Tools\WriteMemoryFileTool;
 
 class ToolResolver
 {

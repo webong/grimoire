@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\A2a;
+namespace Webong\Gouge\Tests\Feature\A2a;
 
 use App\Models\Server\Space;
 use App\Models\Server\SpaceActorState;
@@ -12,10 +12,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aMethodRouter;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Ai\Support\A2a\A2aMethodRouter;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
 
 class A2aTaskApiTest extends TestCase
 {

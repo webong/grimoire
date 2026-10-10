@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Prompts;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Prompts;
 
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Attributes\Description;
 use Laravel\Mcp\Server\Prompt;
 use Laravel\Mcp\Server\Prompts\Argument;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
+use Webong\Gouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
 
 #[Description('Guide an agent to inspect a space and propose the next work plan.')]
 class PlanSpaceWorkPrompt extends Prompt

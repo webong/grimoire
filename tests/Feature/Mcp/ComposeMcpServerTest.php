@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\Mcp;
+namespace Webong\Gouge\Tests\Feature\Mcp;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
@@ -16,21 +16,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Laravel\Mcp\Server\Registrar;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Prompts\PlanSpaceWorkPrompt;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Resources\ComposeServerGuideResource;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Servers\ComposeServer;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\AssignThreadActorTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreateGraphEdgeTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreatePostTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\CreateThreadTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ListSpacesTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\QueryGraphEdgesTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\ReadThreadTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\SearchConversationContextTool;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Tools\TransferThreadSessionTool;
-use Webong\LaravelGouge\Models\Server\AgentConversation;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Gateways\Mcp\Prompts\PlanSpaceWorkPrompt;
+use Webong\Gouge\Ai\Gateways\Mcp\Resources\ComposeServerGuideResource;
+use Webong\Gouge\Ai\Gateways\Mcp\Servers\ComposeServer;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\AssignThreadActorTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreateGraphEdgeTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreatePostTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\CreateThreadTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ListSpacesTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\QueryGraphEdgesTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\ReadThreadTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\SearchConversationContextTool;
+use Webong\Gouge\Ai\Gateways\Mcp\Tools\TransferThreadSessionTool;
+use Webong\Gouge\Models\Server\AgentConversation;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentActors;
 
 class ComposeMcpServerTest extends TestCase
 {

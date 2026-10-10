@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\A2a;
+namespace Webong\Gouge\Tests\Feature\A2a;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Space;
@@ -12,11 +12,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aRegistry;
-use Webong\LaravelGouge\Ai\Tools\DelegateA2aTaskTool;
-use Webong\LaravelGouge\Ai\Tools\InvokeA2aAgentTool;
-use Webong\LaravelGouge\Ai\Tools\ListAvailableA2aAgentsTool;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\A2a\A2aRegistry;
+use Webong\Gouge\Ai\Tools\DelegateA2aTaskTool;
+use Webong\Gouge\Ai\Tools\InvokeA2aAgentTool;
+use Webong\Gouge\Ai\Tools\ListAvailableA2aAgentsTool;
+use Webong\Gouge\Support\AgentChannels;
 
 class OutboundA2aToolsTest extends TestCase
 {

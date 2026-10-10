@@ -1,9 +1,9 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Mcp;
+namespace Webong\Gouge\Ai\Support\Mcp;
 
 use Illuminate\Contracts\Container\Container;
-use Webong\LaravelGouge\Ai\Support\Mcp\Contracts\McpServerHandler;
+use Webong\Gouge\Ai\Support\Mcp\Contracts\McpServerHandler;
 
 class McpServerClient
 {

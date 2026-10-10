@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Workflows;
+namespace Webong\Gouge\Ai\Middleware\Workflows;
 
 use Closure;
 use Laravel\Ai\Prompts\AgentPrompt;

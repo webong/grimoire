@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Operations\Chat;
+namespace Webong\Gouge\Features\Operations\Chat;
 
 use App\Features\Actions\Chat\DispatchThreadMessage;
 use App\Features\Actions\Chat\EnsureThreadMembership;
@@ -11,8 +11,8 @@ use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Features\Actions\Chat\EnsureThreadPresenter;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Features\Actions\Chat\EnsureThreadPresenter;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
 
 class DispatchPromptOperation
 {

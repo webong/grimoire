@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\Skills;
+namespace Webong\Gouge\Ai\Support\Skills;
 
 use App\Models\Server\Post;
 use Illuminate\Support\Facades\File;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class SkillRepository
 {

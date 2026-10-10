@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\Acp;
+namespace Webong\Gouge\Http\Controllers\Api\Acp;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
-use Webong\LaravelGouge\Http\Requests\Server\Acp\HandleAcpRpcRequest;
-use Webong\LaravelGouge\Support\Acp\AcpMethodRouter;
+use Webong\Gouge\Http\Requests\Server\Acp\HandleAcpRpcRequest;
+use Webong\Gouge\Support\Acp\AcpMethodRouter;
 
 class RpcController extends Controller
 {

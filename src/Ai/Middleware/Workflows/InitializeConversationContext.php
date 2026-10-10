@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Workflows;
+namespace Webong\Gouge\Ai\Middleware\Workflows;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use Closure;
 use Laravel\Ai\Prompts\AgentPrompt;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Support\AgentActors;
 
 class InitializeConversationContext
 {

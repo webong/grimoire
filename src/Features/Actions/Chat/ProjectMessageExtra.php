@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Post;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiCatalogRegistry;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiPayloadContract;
+use Webong\Gouge\Ai\Support\A2ui\A2uiCatalogRegistry;
+use Webong\Gouge\Ai\Support\A2ui\A2uiPayloadContract;
 
 class ProjectMessageExtra
 {

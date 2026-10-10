@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Models\Server;
+namespace Webong\Gouge\Models\Server;
 
 use Database\Factories\ThreadActorSessionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

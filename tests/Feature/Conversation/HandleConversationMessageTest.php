@@ -1,9 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\Conversation;
+namespace Webong\Gouge\Tests\Feature\Conversation;
 
 use App\Features\Actions\Chat\DispatchThreadMessage;
 use App\Features\Actions\Chat\ThreadMessageEntry;
+use App\Jobs\DeliverOutboxMessage;
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\SpaceActorState;
@@ -18,15 +19,15 @@ use Laravel\Ai\Tools\Request as AiToolRequest;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentDispatcher;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
-use Webong\LaravelGouge\Ai\Tools\InvokeSubAgentTool;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Jobs\ProcessThreadObservers;
-use Webong\LaravelGouge\Models\Server\AgentConversation;
-use Webong\LaravelGouge\Models\Server\AgentConversationMessage;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentDispatcher;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentInvocationMemory;
+use Webong\Gouge\Ai\Tools\InvokeSubAgentTool;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Jobs\ProcessThreadObservers;
+use Webong\Gouge\Models\Server\AgentConversation;
+use Webong\Gouge\Models\Server\AgentConversationMessage;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentActors;
 
 class HandleConversationMessageTest extends TestCase
 {
@@ -50,10 +51,6 @@ class HandleConversationMessageTest extends TestCase
     public function test_it_queues_presenters_for_presenter_threads_without_observer_dispatch(): void
     {
         Queue::fake();
-
-        $this->mock(AgentRuntime::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('submitTurn')->once();
-        });
 
         $user = $this->makeUser();
         $space = $this->accessibleSpace($user);
@@ -87,7 +84,7 @@ class HandleConversationMessageTest extends TestCase
 
         $this->assertSame('agent_prompt', data_get($message->meta, 'source'));
         $this->assertFalse((bool) data_get($message->meta, 'observer_dispatch'));
-        Queue::assertNothingPushed();
+        Queue::assertPushed(DeliverOutboxMessage::class, 1);
     }
 
     public function test_it_queues_observers_for_peer_threads(): void
@@ -135,10 +132,6 @@ class HandleConversationMessageTest extends TestCase
     {
         Queue::fake();
 
-        $this->mock(AgentRuntime::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('submitTurn')->once();
-        });
-
         $user = $this->makeUser();
         $space = $this->accessibleSpace($user);
         $thread = $this->makeThread($space);
@@ -171,6 +164,7 @@ class HandleConversationMessageTest extends TestCase
         $this->assertSame('agent_prompt', data_get($message->meta, 'source'));
         $this->assertTrue((bool) data_get($message->meta, 'observer_dispatch'));
         Queue::assertPushed(ProcessThreadObservers::class, 1);
+        Queue::assertPushed(DeliverOutboxMessage::class, 1);
     }
 
     public function test_it_returns_turns_for_a_thread_message_from_the_dedicated_endpoint(): void

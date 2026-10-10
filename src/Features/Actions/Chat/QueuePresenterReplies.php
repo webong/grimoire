@@ -1,18 +1,16 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Runtime\AgentTurn;
 
 class QueuePresenterReplies
 {
-    public function __construct(protected AgentRuntime $agentRuntime) {}
+    public function __construct(protected EnqueueThreadPromptOutbox $enqueueThreadPromptOutbox) {}
 
     /**
      * @param  Collection<int, ThreadActor>  $presenters
@@ -24,14 +22,13 @@ class QueuePresenterReplies
         Collection $presenters,
         string $broadcastSpaceId,
     ): void {
-        $presenters->each(function (ThreadActor $presenter) use ($thread, $userMessage, $actor, $broadcastSpaceId): void {
-            $this->agentRuntime->submitTurn(AgentTurn::forPrompt(
+        $presenters->each(function (ThreadActor $presenter) use ($thread, $userMessage, $actor): void {
+            $this->enqueueThreadPromptOutbox->execute(
                 thread: $thread,
                 post: $userMessage,
-                user: $actor,
+                recipient: $actor,
                 threadActor: $presenter,
-                broadcastChannel: $broadcastSpaceId,
-            ));
+            );
         });
     }
 }

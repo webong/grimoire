@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Contracts\Users\UserRepository;
 use App\Features\Actions\Chat\ResolveConversationSpaceContext;
@@ -8,14 +8,14 @@ use App\Features\Actions\Chat\ResolveConversationThreadContext;
 use App\Features\Operations\Chat\ResolveConversationThreadOperation;
 use App\Models\Server\Post;
 use PHPUnit\Framework\TestCase;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aMethodRouter;
-use Webong\LaravelGouge\Ai\Support\A2a\TaskPushNotificationDispatcher;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiCatalogRegistry;
-use Webong\LaravelGouge\Ai\Support\A2ui\A2uiPayloadContract;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Features\Operations\Chat\DispatchPromptOperation;
-use Webong\LaravelGouge\Support\Orchestrate\MessageTaskService;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Ai\Support\A2a\A2aMethodRouter;
+use Webong\Gouge\Ai\Support\A2a\TaskPushNotificationDispatcher;
+use Webong\Gouge\Ai\Support\A2ui\A2uiCatalogRegistry;
+use Webong\Gouge\Ai\Support\A2ui\A2uiPayloadContract;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Features\Operations\Chat\DispatchPromptOperation;
+use Webong\Gouge\Support\Orchestrate\MessageTaskService;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class A2aMethodRouterTransportEdgeCasesTest extends TestCase
 {

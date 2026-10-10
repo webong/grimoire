@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Agents;
+namespace Webong\Gouge\Agents;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Thread;
@@ -13,27 +13,27 @@ use Laravel\Ai\Contracts\RemembersConversations;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Promptable;
 use Stringable;
-use Webong\LaravelGouge\Ai\Concerns\RemembersThreadConversations;
-use Webong\LaravelGouge\Ai\Middleware\Rules\ApplyResponseRules;
-use Webong\LaravelGouge\Ai\Middleware\Rules\ApplySafetyAndPolicyRules;
-use Webong\LaravelGouge\Ai\Middleware\Rules\EnforceActorPermissions;
-use Webong\LaravelGouge\Ai\Middleware\Rules\EnforceThreadParticipation;
-use Webong\LaravelGouge\Ai\Middleware\Rules\EnforceToolBudgetAndTimeouts;
-use Webong\LaravelGouge\Ai\Middleware\Rules\PreventDuplicateProcessing;
-use Webong\LaravelGouge\Ai\Middleware\Rules\RequireEvidenceForDecisions;
-use Webong\LaravelGouge\Ai\Middleware\Rules\ResponseQualityGate;
-use Webong\LaravelGouge\Ai\Middleware\Rules\ValidateInputContract;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\ComposeAndRouteResponse;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\ExecuteToolsAndActions;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\InitializeConversationContext;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\PlanWorkflowSteps;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\PostResponseLearning;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\ResolveAudienceContext;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\SelectPresenters;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\UseThreadConversationStore;
-use Webong\LaravelGouge\Ai\Support\ToolResolver;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\LaravelAiModelProviderResolver;
+use Webong\Gouge\Ai\Concerns\RemembersThreadConversations;
+use Webong\Gouge\Ai\Middleware\Rules\ApplyResponseRules;
+use Webong\Gouge\Ai\Middleware\Rules\ApplySafetyAndPolicyRules;
+use Webong\Gouge\Ai\Middleware\Rules\EnforceActorPermissions;
+use Webong\Gouge\Ai\Middleware\Rules\EnforceThreadParticipation;
+use Webong\Gouge\Ai\Middleware\Rules\EnforceToolBudgetAndTimeouts;
+use Webong\Gouge\Ai\Middleware\Rules\PreventDuplicateProcessing;
+use Webong\Gouge\Ai\Middleware\Rules\RequireEvidenceForDecisions;
+use Webong\Gouge\Ai\Middleware\Rules\ResponseQualityGate;
+use Webong\Gouge\Ai\Middleware\Rules\ValidateInputContract;
+use Webong\Gouge\Ai\Middleware\Workflows\ComposeAndRouteResponse;
+use Webong\Gouge\Ai\Middleware\Workflows\ExecuteToolsAndActions;
+use Webong\Gouge\Ai\Middleware\Workflows\InitializeConversationContext;
+use Webong\Gouge\Ai\Middleware\Workflows\PlanWorkflowSteps;
+use Webong\Gouge\Ai\Middleware\Workflows\PostResponseLearning;
+use Webong\Gouge\Ai\Middleware\Workflows\ResolveAudienceContext;
+use Webong\Gouge\Ai\Middleware\Workflows\SelectPresenters;
+use Webong\Gouge\Ai\Middleware\Workflows\UseThreadConversationStore;
+use Webong\Gouge\Ai\Support\ToolResolver;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\LaravelAiModelProviderResolver;
 
 class LaravelAiPresenterAgent implements Agent, HasMiddleware, HasTools, RemembersConversations
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadActor;
@@ -15,11 +15,11 @@ use Laravel\Ai\Tools\Request as ToolRequest;
 use Sajya\Client\Client as JsonRpcClient;
 use Stringable;
 use Throwable;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aRegistry;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Ai\Support\A2a\A2aRegistry;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class DelegateA2aTaskTool implements Tool
 {

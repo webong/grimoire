@@ -1,5 +1,5 @@
 {
-    "name": "webong/laravel-gouge",
+    "name": "webong/gouge",
     "type": "library",
     "description": "Optional Laravel AI runtime adapter for Figurate",
     "require": {
@@ -11,18 +11,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Webong\\LaravelGouge\\": "src/"
+            "Webong\\Gouge\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Webong\\LaravelGouge\\Tests\\": "tests/"
+            "Webong\\Gouge\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Webong\\LaravelGouge\\LaravelGougeServiceProvider"
+                "Webong\\Gouge\\GougeServiceProvider"
             ]
         }
     }

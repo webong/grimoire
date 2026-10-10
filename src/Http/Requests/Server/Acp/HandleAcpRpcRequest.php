@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Requests\Server\Acp;
+namespace Webong\Gouge\Http\Requests\Server\Acp;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;

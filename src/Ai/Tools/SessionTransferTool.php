@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Thread;
 use App\Models\Server\User;
@@ -8,8 +8,8 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Models\Server\ThreadActorSession;
 
 class SessionTransferTool implements Tool
 {

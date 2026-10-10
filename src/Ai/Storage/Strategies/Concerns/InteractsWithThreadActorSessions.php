@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Storage\Strategies\Concerns;
+namespace Webong\Gouge\Ai\Storage\Strategies\Concerns;
 
 use App\Models\Server\SpaceActorState;
 use App\Models\Server\Thread;
@@ -8,9 +8,9 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Webong\LaravelGouge\Ai\Storage\ConversationId;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Ai\Storage\ConversationId;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentActors;
 
 trait InteractsWithThreadActorSessions
 {

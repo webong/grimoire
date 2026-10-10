@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support;
+namespace Webong\Gouge\Support;
 
 use App\Models\Server\Channel;
 use Illuminate\Support\Arr;
@@ -16,7 +16,7 @@ class LaravelAiModelProviderResolver
      */
     public static function supportedProviderDrivers(): array
     {
-        $providers = config('laravel-gouge.model_providers', []);
+        $providers = config('gouge.model_providers', []);
 
         return is_array($providers) ? array_values(array_map('strval', array_keys($providers))) : [];
     }
@@ -65,7 +65,7 @@ class LaravelAiModelProviderResolver
         $provider = strtolower(trim((string) data_get(
             $channel->config,
             'provider',
-            config('laravel-gouge.channel.default_provider'),
+            config('gouge.channel.default_provider'),
         )));
 
         if (! in_array($provider, self::supportedProviderDrivers(), true)) {
@@ -80,7 +80,7 @@ class LaravelAiModelProviderResolver
      */
     protected function providerDefinition(string $provider): array
     {
-        $definition = config("laravel-gouge.model_providers.{$provider}");
+        $definition = config("gouge.model_providers.{$provider}");
 
         if (! is_array($definition) || ! is_string($definition['factory'] ?? null)) {
             throw new InvalidArgumentException("AI provider [{$provider}] is not configured.");

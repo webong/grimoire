@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Runtime\AgentTurn;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Runtime\AgentTurn;
 
 class AgentRuntimeContractTest extends TestCase
 {

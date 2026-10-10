@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Jobs;
+namespace Webong\Gouge\Jobs;
 
 use App\Features\Actions\Chat\DispatchThreadMessage;
 use App\Features\Actions\Chat\ThreadMessageEntry;
@@ -8,9 +8,9 @@ use App\Models\Server\Post;
 use App\Models\Server\Thread;
 use App\Models\Server\ThreadEvent;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class ProcessInboundA2aPushWebhookJob extends ProcessWebhookJob
 {

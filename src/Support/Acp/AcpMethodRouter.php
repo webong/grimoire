@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Acp;
+namespace Webong\Gouge\Support\Acp;
 
 use App\Features\Actions\Chat\BootstrapConversationSpaceContext;
 use App\Models\Server\User;

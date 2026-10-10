@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Unit;
+namespace Webong\Gouge\Tests\Unit;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -8,8 +8,8 @@ use App\Models\Server\Space;
 use App\Models\Server\Thread;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentArtifacts;
-use Webong\LaravelGouge\Support\Channels\ChannelSkillContextResolver;
+use Webong\Gouge\Support\AgentArtifacts;
+use Webong\Gouge\Support\Channels\ChannelSkillContextResolver;
 
 class ChannelSkillContextResolverTest extends TestCase
 {

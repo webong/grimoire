@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\A2a;
+namespace Webong\Gouge\Http\Controllers\Api\A2a;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\StreamedEvent;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Webong\LaravelGouge\Ai\Support\A2a\A2aMethodRouter;
-use Webong\LaravelGouge\Http\Requests\Server\A2a\HandleA2aRpcRequest;
+use Webong\Gouge\Ai\Support\A2a\A2aMethodRouter;
+use Webong\Gouge\Http\Requests\Server\A2a\HandleA2aRpcRequest;
 
 class StreamController extends Controller
 {

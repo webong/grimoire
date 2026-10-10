@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Features\Actions\Chat\DispatchThreadMessage;
 use App\Features\Actions\Chat\ThreadMessageEntry;

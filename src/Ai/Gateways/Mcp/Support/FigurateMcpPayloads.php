@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Support;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Support;
 
 use App\Models\Server\Post;
 use App\Models\Server\PostRelation;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Mcp\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class FigurateMcpPayloads
 {

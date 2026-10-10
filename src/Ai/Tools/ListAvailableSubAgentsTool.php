@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use Stringable;
-use Webong\LaravelGouge\Ai\Support\SubAgents\SubAgentDispatcher;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Ai\Support\SubAgents\SubAgentDispatcher;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
 
 class ListAvailableSubAgentsTool implements Tool
 {

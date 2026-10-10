@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Rules;
+namespace Webong\Gouge\Ai\Middleware\Rules;
 
 use App\Models\Server\Thread;
 use Closure;

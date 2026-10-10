@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support;
+namespace Webong\Gouge\Ai\Support;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;

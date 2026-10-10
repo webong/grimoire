@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Runtime;
+namespace Webong\Gouge\Runtime;
 
 final readonly class AgentRuntimeCorrelation
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Middleware\Workflows;
+namespace Webong\Gouge\Ai\Middleware\Workflows;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -8,7 +8,7 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\User;
 use Closure;
 use Laravel\Ai\Prompts\AgentPrompt;
-use Webong\LaravelGouge\Ai\Support\ThreadContextResolver;
+use Webong\Gouge\Ai\Support\ThreadContextResolver;
 
 class ResolveAudienceContext
 {

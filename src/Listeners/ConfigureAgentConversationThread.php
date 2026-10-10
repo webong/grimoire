@@ -1,9 +1,9 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Chat\ConversationThreadCreated;
-use Webong\LaravelGouge\Features\Actions\Chat\EnsureThreadPresenter;
+use Webong\Gouge\Features\Actions\Chat\EnsureThreadPresenter;
 
 class ConfigureAgentConversationThread
 {
@@ -11,7 +11,7 @@ class ConfigureAgentConversationThread
 
     public function handle(ConversationThreadCreated $event): void
     {
-        $presenter = config('laravel-gouge.presenter');
+        $presenter = config('gouge.presenter');
 
         if (! is_string($presenter) || trim($presenter) === '') {
             return;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Features\Actions\Chat\EnqueueThreadMessageOutbox;
 use App\Features\Actions\Chat\Protocols\ChannelProtocol;
@@ -15,7 +15,7 @@ use App\Support\Channels\ChannelLinkRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class EnqueueThreadMessageOutboxChannelsTest extends TestCase
 {

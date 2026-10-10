@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -12,12 +12,12 @@ use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
-use Webong\LaravelGouge\Ai\Support\Acp\AcpRegistry;
-use Webong\LaravelGouge\Ai\Support\Acp\OutboundAcpClient;
-use Webong\LaravelGouge\Ai\Tools\Diagnostics\EncodesToolResponse;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Ai\Support\Acp\AcpRegistry;
+use Webong\Gouge\Ai\Support\Acp\OutboundAcpClient;
+use Webong\Gouge\Ai\Tools\Diagnostics\EncodesToolResponse;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class DelegateAcpTaskTool implements Tool
 {

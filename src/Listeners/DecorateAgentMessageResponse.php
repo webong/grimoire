@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Chat\PreparingMessageResponse;
 use App\Models\Server\Post;
 use App\Models\Server\ThreadActor;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Features\Actions\Chat\FindAssistantRepliesForMessage;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
+use Webong\Gouge\Features\Actions\Chat\FindAssistantRepliesForMessage;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
 
 class DecorateAgentMessageResponse
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners\Server\Ai;
+namespace Webong\Gouge\Listeners\Server\Ai;
 
 use App\Models\Server\ThreadEvent;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Responses\AgentResponse;
-use Webong\LaravelGouge\Ai\Agents\ObserverAgent;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Ai\Agents\ObserverAgent;
+use Webong\Gouge\Support\AgentEvents;
 
 class RecordObserverAgentPrompted
 {

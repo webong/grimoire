@@ -1,11 +1,11 @@
 <?php
 
-namespace Webong\LaravelGouge\Notifications\Support;
+namespace Webong\Gouge\Notifications\Support;
 
 use App\Notifications\Channels\CoordinationChannel;
 use Illuminate\Notifications\Notification;
-use Webong\LaravelGouge\Notifications\Channels\CompletionChannel;
-use Webong\LaravelGouge\Notifications\Channels\ContinuationChannel;
+use Webong\Gouge\Notifications\Channels\CompletionChannel;
+use Webong\Gouge\Notifications\Channels\ContinuationChannel;
 
 class ConversationTransportRouter
 {

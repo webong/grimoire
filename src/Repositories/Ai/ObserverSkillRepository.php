@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Repositories\Ai;
+namespace Webong\Gouge\Repositories\Ai;
 
 use App\Models\Server\ThreadActor;
 use Illuminate\Support\Facades\File;
-use Webong\LaravelGouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentActors;
 
 class ObserverSkillRepository
 {

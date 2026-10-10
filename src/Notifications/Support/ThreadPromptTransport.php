@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Notifications\Support;
+namespace Webong\Gouge\Notifications\Support;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -8,11 +8,11 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadEvent;
 use App\Models\Server\User;
 use Illuminate\Notifications\Notification;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Features\Actions\Chat\EnqueueThreadPromptOutbox;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentEvents;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Features\Actions\Chat\EnqueueThreadPromptOutbox;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentEvents;
 
 class ThreadPromptTransport
 {

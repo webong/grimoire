@@ -1,16 +1,16 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Notifications\RoutingNotificationChannels;
 use App\Models\Server\Post;
 use App\Models\Server\User;
 use App\Notifications\Channels\CoordinationChannel;
 use Figurate\Auth\Support\RobotUsers;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Notifications\Channels\CompletionChannel;
-use Webong\LaravelGouge\Notifications\Channels\ContinuationChannel;
-use Webong\LaravelGouge\Notifications\Channels\ThreadCoordinationChannel;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Notifications\Channels\CompletionChannel;
+use Webong\Gouge\Notifications\Channels\ContinuationChannel;
+use Webong\Gouge\Notifications\Channels\ThreadCoordinationChannel;
 
 class RouteAgentNotification
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Support\A2ui;
+namespace Webong\Gouge\Ai\Support\A2ui;
 
 class A2uiPayloadContract
 {

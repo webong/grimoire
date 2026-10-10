@@ -1,7 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Runtime;
+namespace Webong\Gouge\Runtime;
 
+use App\Contracts\Coordination\WorkExchange\WorkUpdateReceiver;
+use App\Coordination\WorkExchange\V1\WorkLifecycle;
+use App\Coordination\WorkExchange\V1\WorkUpdate;
 use App\Features\Actions\Chat\DispatchThreadMessage;
 use App\Features\Actions\Chat\ThreadMessageEntry;
 use App\Models\Server\Post;
@@ -16,16 +19,16 @@ use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\StreamableAgentResponse;
 use RuntimeException;
 use Throwable;
-use Webong\LaravelGouge\Agents\LaravelAiPresenterAgent;
-use Webong\LaravelGouge\Ai\Storage\ConversationId;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Ai\Support\A2a\TaskPushNotificationDispatcher;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Models\Server\AgentConversationMessage;
-use Webong\LaravelGouge\Models\Server\ThreadActorSession;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\Orchestrate\MessageTaskService;
-use Webong\LaravelGouge\Support\Orchestrate\ThreadEventTaskService;
+use Webong\Gouge\Agents\LaravelAiPresenterAgent;
+use Webong\Gouge\Ai\Storage\ConversationId;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Ai\Support\A2a\TaskPushNotificationDispatcher;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Models\Server\AgentConversationMessage;
+use Webong\Gouge\Models\Server\ThreadActorSession;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\Orchestrate\MessageTaskService;
+use Webong\Gouge\Support\Orchestrate\ThreadEventTaskService;
 
 class LaravelAiRuntime implements AgentRuntime
 {
@@ -34,6 +37,7 @@ class LaravelAiRuntime implements AgentRuntime
         protected TaskPushNotificationDispatcher $taskPushNotificationDispatcher,
         protected ThreadEventTaskService $taskService,
         protected MessageTaskService $messageTaskService,
+        protected WorkUpdateReceiver $workUpdates,
     ) {}
 
     public function submitTurn(AgentTurn $turn): void
@@ -254,6 +258,12 @@ class LaravelAiRuntime implements AgentRuntime
                 status: 'failed',
                 errorMessage: $exception->getMessage(),
             );
+            $this->sendWorkExchangeUpdate(
+                post: $post,
+                state: WorkLifecycle::Failed,
+                sequence: 2,
+                data: ['error' => mb_substr(trim($exception->getMessage()), 0, 400)],
+            );
             report($exception);
         }
     }
@@ -401,6 +411,12 @@ class LaravelAiRuntime implements AgentRuntime
         [$assistantText, $assistantA2ui] = $this->extractAssistantA2uiPayload($assistantText);
 
         if ($assistantText === '' && ! is_array($assistantA2ui)) {
+            $this->sendWorkExchangeUpdate(
+                post: $userPost,
+                state: WorkLifecycle::Completed,
+                sequence: 2,
+            );
+
             return;
         }
 
@@ -420,6 +436,22 @@ class LaravelAiRuntime implements AgentRuntime
         $this->attachInvocationSourceRelation($userPost, $assistantMessage);
         $this->taskService->syncLocalTaskForPromptMessage($userPost);
         $this->linkAgentTelemetryToThreadMessages($thread, $userPost, $assistantMessage, $threadActor, $userId, $response);
+        $this->sendWorkExchangeUpdate(
+            post: $userPost,
+            state: WorkLifecycle::Output,
+            sequence: 2,
+            data: [
+                'post' => [
+                    'id' => $assistantMessage->ulid,
+                    'text' => $assistantMessage->text,
+                ],
+            ],
+        );
+        $this->sendWorkExchangeUpdate(
+            post: $userPost,
+            state: WorkLifecycle::Completed,
+            sequence: 3,
+        );
     }
 
     protected function attachInvocationSourceRelation(Post $userPost, Post $assistantMessage): void
@@ -610,6 +642,55 @@ class LaravelAiRuntime implements AgentRuntime
             status: 'failed',
             errorMessage: $exception->getMessage(),
         );
+        $this->sendWorkExchangeUpdate(
+            post: $userPost,
+            state: WorkLifecycle::Failed,
+            sequence: 2,
+            data: ['error' => mb_substr(trim($exception->getMessage()), 0, 400)],
+        );
+    }
+
+    protected function sendWorkExchangeUpdate(
+        Post $post,
+        WorkLifecycle $state,
+        int $sequence,
+        mixed $data = null,
+    ): void {
+        $exchange = data_get($post->meta, 'work_exchange');
+        if (! is_array($exchange)) {
+            return;
+        }
+
+        $bridge = $this->trimmedString($exchange['bridge'] ?? null);
+        $requestId = $this->trimmedString($exchange['request_id'] ?? null);
+        $correlationId = $this->trimmedString($exchange['correlation_id'] ?? null);
+        $idempotencyKey = $this->trimmedString($exchange['idempotency_key'] ?? null);
+        $participantId = $this->trimmedString($exchange['participant_id'] ?? null);
+        $thread = $post->postable;
+
+        if (
+            $bridge === null
+            || $requestId === null
+            || $correlationId === null
+            || $idempotencyKey === null
+            || $participantId === null
+            || ! $thread instanceof Thread
+        ) {
+            return;
+        }
+
+        $this->workUpdates->receive(new WorkUpdate(
+            eventId: "{$requestId}-{$state->value}",
+            requestId: $requestId,
+            threadId: (string) $thread->uuid,
+            postId: (string) $post->ulid,
+            participantId: $participantId,
+            state: $state,
+            sequence: $sequence,
+            idempotencyKey: "{$idempotencyKey}:{$state->value}",
+            correlationId: $correlationId,
+            data: $data,
+        ), $bridge);
     }
 
     protected function isInvocationCanceled(Post $userPost, ThreadActor $threadActor): bool

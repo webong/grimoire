@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Features\Actions\Chat;
+namespace Webong\Gouge\Features\Actions\Chat;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
 use App\Models\Server\User;
 use Illuminate\Support\Collection;
-use Webong\LaravelGouge\Models\Server\AgentConversationMessage;
+use Webong\Gouge\Models\Server\AgentConversationMessage;
 
 class ResolveNodeInvocation
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Requests\Server\A2a;
+namespace Webong\Gouge\Http\Requests\Server\A2a;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

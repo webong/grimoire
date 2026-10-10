@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\Mcp;
+namespace Webong\Gouge\Http\Controllers\Api\Mcp;
 
 use App\Http\Controllers\Api\ChannelController;
 

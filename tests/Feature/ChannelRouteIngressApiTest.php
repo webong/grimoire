@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature;
+namespace Webong\Gouge\Tests\Feature;
 
 use App\Models\Server\Channel;
 use App\Models\Server\Post;
@@ -11,7 +11,7 @@ use App\Support\Channels\ChannelLinkRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Tests\TestCase;
-use Webong\LaravelGouge\Support\AgentArtifacts;
+use Webong\Gouge\Support\AgentArtifacts;
 
 class ChannelRouteIngressApiTest extends TestCase
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Channels\Drivers;
+namespace Webong\Gouge\Support\Channels\Drivers;
 
 use App\Models\Server\Channel;
 use App\Support\Channels\Drivers\GenericChannelDriver;
 use App\Support\Security\UrlTrustPolicy;
 use Illuminate\Validation\ValidationException;
-use Webong\LaravelGouge\Ai\Support\Mcp\McpRemoteEndpointClient;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Ai\Support\Mcp\McpRemoteEndpointClient;
+use Webong\Gouge\Support\AgentChannels;
 
 class McpChannelDriver extends GenericChannelDriver
 {

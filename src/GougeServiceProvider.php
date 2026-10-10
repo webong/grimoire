@@ -1,7 +1,8 @@
 <?php
 
-namespace Webong\LaravelGouge;
+namespace Webong\Gouge;
 
+use App\Coordination\WorkExchange\ParticipantEndpointRegistry;
 use App\Events\Server\Api\PreparingResourcePayload;
 use App\Events\Server\Auth\WidgetUsersMerging;
 use App\Events\Server\Channels\MappingChannelRoute;
@@ -12,7 +13,6 @@ use App\Events\Server\Chat\PreparingMessageResponse;
 use App\Events\Server\Chat\PreparingThreadMessage;
 use App\Events\Server\Chat\ThreadMessageDispatched;
 use App\Events\Server\Notifications\RoutingNotificationChannels;
-use App\Features\Actions\Chat\ProtocolRegistry;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -23,38 +23,37 @@ use Nuwave\Lighthouse\Events\BuildSchemaString;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile;
 use Spatie\WebhookClient\WebhookResponse\DefaultRespondsTo;
-use Webong\LaravelGouge\Ai\Storage\ConversationPersistenceResolver;
-use Webong\LaravelGouge\Ai\Storage\ThreadConversationStore;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Features\Actions\Chat\AgentPromptOutboundMessageSender;
-use Webong\LaravelGouge\Features\Actions\Chat\Protocols\AgentPromptProtocol;
-use Webong\LaravelGouge\Jobs\ProcessInboundA2aPushWebhookJob;
-use Webong\LaravelGouge\Listeners\AddAgentContextToChannelOutbox;
-use Webong\LaravelGouge\Listeners\AddAgentContextToChannelRoute;
-use Webong\LaravelGouge\Listeners\AddAgentContextToInboundChannel;
-use Webong\LaravelGouge\Listeners\AddAgentContextToResourcePayload;
-use Webong\LaravelGouge\Listeners\ConfigureAgentConversationThread;
-use Webong\LaravelGouge\Listeners\DecorateAgentMessageResponse;
-use Webong\LaravelGouge\Listeners\MigrateAgentUserData;
-use Webong\LaravelGouge\Listeners\PrepareAgentMessage;
-use Webong\LaravelGouge\Listeners\PrepareAgentMessageMetadata;
-use Webong\LaravelGouge\Listeners\RouteAgentNotification;
-use Webong\LaravelGouge\Listeners\Server\Ai\RecordObserverAgentPrompted;
-use Webong\LaravelGouge\Listeners\Server\Ai\RecordObserverAgentPrompting;
-use Webong\LaravelGouge\Listeners\Server\Chat\QueueThreadObserversForPeerMessage;
-use Webong\LaravelGouge\Runtime\LaravelAiRuntime;
-use Webong\LaravelGouge\Support\AgentAbilities;
-use Webong\LaravelGouge\Support\Channels\Drivers\A2aChannelDriver;
-use Webong\LaravelGouge\Support\Channels\Drivers\AcpChannelDriver;
-use Webong\LaravelGouge\Support\Channels\Drivers\AiProviderChannelDriver;
-use Webong\LaravelGouge\Support\Channels\Drivers\McpChannelDriver;
-use Webong\LaravelGouge\Support\Webhooks\A2aPushSignatureValidator;
+use Webong\Gouge\Ai\Storage\ConversationPersistenceResolver;
+use Webong\Gouge\Ai\Storage\ThreadConversationStore;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Coordination\GougeBridge;
+use Webong\Gouge\Jobs\ProcessInboundA2aPushWebhookJob;
+use Webong\Gouge\Listeners\AddAgentContextToChannelOutbox;
+use Webong\Gouge\Listeners\AddAgentContextToChannelRoute;
+use Webong\Gouge\Listeners\AddAgentContextToInboundChannel;
+use Webong\Gouge\Listeners\AddAgentContextToResourcePayload;
+use Webong\Gouge\Listeners\ConfigureAgentConversationThread;
+use Webong\Gouge\Listeners\DecorateAgentMessageResponse;
+use Webong\Gouge\Listeners\MigrateAgentUserData;
+use Webong\Gouge\Listeners\PrepareAgentMessage;
+use Webong\Gouge\Listeners\PrepareAgentMessageMetadata;
+use Webong\Gouge\Listeners\RouteAgentNotification;
+use Webong\Gouge\Listeners\Server\Ai\RecordObserverAgentPrompted;
+use Webong\Gouge\Listeners\Server\Ai\RecordObserverAgentPrompting;
+use Webong\Gouge\Listeners\Server\Chat\QueueThreadObserversForPeerMessage;
+use Webong\Gouge\Runtime\LaravelAiRuntime;
+use Webong\Gouge\Support\AgentAbilities;
+use Webong\Gouge\Support\Channels\Drivers\A2aChannelDriver;
+use Webong\Gouge\Support\Channels\Drivers\AcpChannelDriver;
+use Webong\Gouge\Support\Channels\Drivers\AiProviderChannelDriver;
+use Webong\Gouge\Support\Channels\Drivers\McpChannelDriver;
+use Webong\Gouge\Support\Webhooks\A2aPushSignatureValidator;
 
-class LaravelGougeServiceProvider extends ServiceProvider
+class GougeServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laravel-gouge.php', 'laravel-gouge');
+        $this->mergeConfigFrom(__DIR__.'/../config/gouge.php', 'gouge');
         $this->mergeConfigFrom(__DIR__.'/../config/a2a.php', 'a2a');
         $this->mergeConfigFrom(__DIR__.'/../config/acp.php', 'acp');
         $this->mergeConfigFrom(__DIR__.'/../config/ai-domain.php', 'ai-domain');
@@ -73,13 +72,12 @@ class LaravelGougeServiceProvider extends ServiceProvider
         ));
         config()->set('services.mcp', array_replace_recursive(
             config('services.mcp', []),
-            config('laravel-gouge.mcp_client', []),
+            config('gouge.mcp_client', []),
         ));
 
         $this->app->singleton(AgentRuntime::class, LaravelAiRuntime::class);
-        $this->app->singleton(AgentPromptOutboundMessageSender::class);
-        $this->app->singleton(AgentPromptProtocol::class);
-        $this->app->tag([AgentPromptProtocol::class], ProtocolRegistry::DriverTag);
+        $this->app->singleton(GougeBridge::class);
+        $this->app->tag([GougeBridge::class], ParticipantEndpointRegistry::BridgeTag);
         $this->app->singleton(ConversationStore::class, fn ($application): ThreadConversationStore => new ThreadConversationStore(
             resolver: $application->make(ConversationPersistenceResolver::class),
         ));

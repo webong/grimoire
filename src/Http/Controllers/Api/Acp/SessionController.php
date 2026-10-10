@@ -1,14 +1,14 @@
 <?php
 
-namespace Webong\LaravelGouge\Http\Controllers\Api\Acp;
+namespace Webong\Gouge\Http\Controllers\Api\Acp;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Webong\LaravelGouge\Http\Requests\Server\Acp\PromptAcpSessionRequest;
-use Webong\LaravelGouge\Http\Requests\Server\Acp\StoreAcpSessionRequest;
-use Webong\LaravelGouge\Support\Acp\AcpSessionService;
+use Webong\Gouge\Http\Requests\Server\Acp\PromptAcpSessionRequest;
+use Webong\Gouge\Http\Requests\Server\Acp\StoreAcpSessionRequest;
+use Webong\Gouge\Support\Acp\AcpSessionService;
 
 class SessionController extends Controller
 {

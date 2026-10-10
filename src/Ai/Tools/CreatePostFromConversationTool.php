@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools;
+namespace Webong\Gouge\Ai\Tools;
 
 use App\Models\Server\Space;
 use App\Models\Server\Thread;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
-use Webong\LaravelGouge\Events\Server\Ai\ConversationPostRequested;
+use Webong\Gouge\Events\Server\Ai\ConversationPostRequested;
 
 class CreatePostFromConversationTool implements Tool
 {

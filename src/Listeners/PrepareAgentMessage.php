@@ -1,13 +1,13 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Chat\ThreadMessageDispatched;
 use App\Models\Server\Thread;
 use App\Models\Server\User;
-use Webong\LaravelGouge\Ai\Support\Knowledge\MessageAttachmentStoreIngestor;
-use Webong\LaravelGouge\Features\Actions\Chat\QueuePresenterReplies;
-use Webong\LaravelGouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
+use Webong\Gouge\Ai\Support\Knowledge\MessageAttachmentStoreIngestor;
+use Webong\Gouge\Features\Actions\Chat\QueuePresenterReplies;
+use Webong\Gouge\Features\Actions\Chat\ResolveActiveThreadPresenters;
 
 class PrepareAgentMessage
 {

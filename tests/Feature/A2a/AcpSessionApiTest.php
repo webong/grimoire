@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Tests\Feature\A2a;
+namespace Webong\Gouge\Tests\Feature\A2a;
 
 use App\Models\Server\Post;
 use App\Models\Server\Space;
@@ -16,10 +16,10 @@ use Laravel\Passport\Passport;
 use Laravel\Sanctum\Sanctum;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use Webong\LaravelGouge\Contracts\AgentRuntime;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\TaskRecord;
+use Webong\Gouge\Contracts\AgentRuntime;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\TaskRecord;
 
 class AcpSessionApiTest extends TestCase
 {

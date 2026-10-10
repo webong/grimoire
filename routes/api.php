@@ -4,20 +4,20 @@ use App\Http\Middleware\EnsureTokenAbility;
 use App\Http\Middleware\EnsureTransportUser;
 use Illuminate\Support\Facades\Route;
 use Laravel\Mcp\Facades\Mcp;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Servers\ComposeServer;
-use Webong\LaravelGouge\Http\Controllers\Api\A2a\StreamController as A2aStreamController;
-use Webong\LaravelGouge\Http\Controllers\Api\Acp\RpcController as AcpRpcController;
-use Webong\LaravelGouge\Http\Controllers\Api\Acp\SessionController as AcpSessionController;
-use Webong\LaravelGouge\Http\Controllers\Api\Acp\TaskController as AcpTaskController;
-use Webong\LaravelGouge\Http\Controllers\Api\FormTurnsController;
-use Webong\LaravelGouge\Http\Controllers\Api\PostInvocationController;
-use Webong\LaravelGouge\Http\Controllers\Api\TaskController;
-use Webong\LaravelGouge\Http\Middleware\EnsureA2aEnabled;
-use Webong\LaravelGouge\Http\Middleware\EnsureA2aRpcAbility;
-use Webong\LaravelGouge\Http\Middleware\NormalizeA2aRpcMethodNames;
-use Webong\LaravelGouge\Http\Procedures\A2aProcedure;
-use Webong\LaravelGouge\Http\Procedures\A2aTasksProcedure;
-use Webong\LaravelGouge\Http\Procedures\A2aTasksPushNotificationConfigProcedure;
+use Webong\Gouge\Ai\Gateways\Mcp\Servers\ComposeServer;
+use Webong\Gouge\Http\Controllers\Api\A2a\StreamController as A2aStreamController;
+use Webong\Gouge\Http\Controllers\Api\Acp\RpcController as AcpRpcController;
+use Webong\Gouge\Http\Controllers\Api\Acp\SessionController as AcpSessionController;
+use Webong\Gouge\Http\Controllers\Api\Acp\TaskController as AcpTaskController;
+use Webong\Gouge\Http\Controllers\Api\FormTurnsController;
+use Webong\Gouge\Http\Controllers\Api\PostInvocationController;
+use Webong\Gouge\Http\Controllers\Api\TaskController;
+use Webong\Gouge\Http\Middleware\EnsureA2aEnabled;
+use Webong\Gouge\Http\Middleware\EnsureA2aRpcAbility;
+use Webong\Gouge\Http\Middleware\NormalizeA2aRpcMethodNames;
+use Webong\Gouge\Http\Procedures\A2aProcedure;
+use Webong\Gouge\Http\Procedures\A2aTasksProcedure;
+use Webong\Gouge\Http\Procedures\A2aTasksPushNotificationConfigProcedure;
 
 Route::prefix('posts')->middleware(['auth:sanctum,passport'])->group(function (): void {
     Route::post('/{post}/invocations', [PostInvocationController::class, 'store'])

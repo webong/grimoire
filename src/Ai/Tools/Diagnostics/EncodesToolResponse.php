@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Tools\Diagnostics;
+namespace Webong\Gouge\Ai\Tools\Diagnostics;
 
 trait EncodesToolResponse
 {

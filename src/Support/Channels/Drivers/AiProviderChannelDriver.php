@@ -1,10 +1,10 @@
 <?php
 
-namespace Webong\LaravelGouge\Support\Channels\Drivers;
+namespace Webong\Gouge\Support\Channels\Drivers;
 
 use App\Models\Server\Channel;
 use App\Support\Channels\Drivers\GenericChannelDriver;
-use Webong\LaravelGouge\Support\AgentChannels;
+use Webong\Gouge\Support\AgentChannels;
 
 class AiProviderChannelDriver extends GenericChannelDriver
 {
@@ -15,7 +15,7 @@ class AiProviderChannelDriver extends GenericChannelDriver
 
     public function supportedTransports(): array
     {
-        $transports = config('laravel-gouge.channel.transports', [Channel::TransportHttp]);
+        $transports = config('gouge.channel.transports', [Channel::TransportHttp]);
 
         return is_array($transports) ? array_values($transports) : [Channel::TransportHttp];
     }
@@ -27,7 +27,7 @@ class AiProviderChannelDriver extends GenericChannelDriver
 
     public function capabilities(?Channel $channel = null): array
     {
-        $capabilities = config('laravel-gouge.channel.capabilities', []);
+        $capabilities = config('gouge.channel.capabilities', []);
 
         return is_array($capabilities) ? array_values($capabilities) : [];
     }
@@ -35,7 +35,7 @@ class AiProviderChannelDriver extends GenericChannelDriver
     public function prepareForRegistration(array $attributes): array
     {
         $prepared = parent::prepareForRegistration($attributes);
-        $prepared['transport'] = config('laravel-gouge.channel.transport', Channel::TransportHttp);
+        $prepared['transport'] = config('gouge.channel.transport', Channel::TransportHttp);
         $prepared['config'] = $this->normalizeProviderConfig($prepared['config'] ?? []);
 
         return $prepared;
@@ -53,7 +53,7 @@ class AiProviderChannelDriver extends GenericChannelDriver
         }
 
         if (array_key_exists('transport', $prepared)) {
-            $prepared['transport'] = config('laravel-gouge.channel.transport', Channel::TransportHttp);
+            $prepared['transport'] = config('gouge.channel.transport', Channel::TransportHttp);
         }
 
         return $prepared;

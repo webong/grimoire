@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Jobs;
+namespace Webong\Gouge\Jobs;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -8,12 +8,12 @@ use App\Models\Server\ThreadActor;
 use App\Models\Server\ThreadEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Webong\LaravelGouge\Ai\Support\Observer\Contracts\ObserverSkill;
-use Webong\LaravelGouge\Ai\Support\Observer\ObserverRegistry;
-use Webong\LaravelGouge\Ai\Support\Observer\ObserverResult;
-use Webong\LaravelGouge\Support\AgentActors;
-use Webong\LaravelGouge\Support\AgentEvents;
-use Webong\LaravelGouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
+use Webong\Gouge\Ai\Support\Observer\Contracts\ObserverSkill;
+use Webong\Gouge\Ai\Support\Observer\ObserverRegistry;
+use Webong\Gouge\Ai\Support\Observer\ObserverResult;
+use Webong\Gouge\Support\AgentActors;
+use Webong\Gouge\Support\AgentEvents;
+use Webong\Gouge\Support\Orchestrate\ResolveObserverDispatchPolicy;
 
 class ProcessThreadObservers implements ShouldQueue
 {

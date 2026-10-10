@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Agents;
+namespace Webong\Gouge\Ai\Agents;
 
 use App\Models\Server\Post;
 use App\Models\Server\Thread;
@@ -12,7 +12,7 @@ use Laravel\Ai\Contracts\HasMiddleware;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Promptable;
 use Stringable;
-use Webong\LaravelGouge\Ai\Middleware\Workflows\ApplyObserverWorkflow;
+use Webong\Gouge\Ai\Middleware\Workflows\ApplyObserverWorkflow;
 
 #[UseCheapestModel]
 class ObserverAgent implements Agent, HasMiddleware, HasStructuredOutput

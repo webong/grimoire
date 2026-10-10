@@ -1,9 +1,9 @@
 <?php
 
-namespace Webong\LaravelGouge\Listeners;
+namespace Webong\Gouge\Listeners;
 
 use App\Events\Server\Channels\PreparingChannelOutboxPayload;
-use Webong\LaravelGouge\Support\Channels\ChannelSkillContextResolver;
+use Webong\Gouge\Support\Channels\ChannelSkillContextResolver;
 
 class AddAgentContextToChannelOutbox
 {

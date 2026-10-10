@@ -1,6 +1,6 @@
 <?php
 
-namespace Webong\LaravelGouge\Ai\Gateways\Mcp\Resources;
+namespace Webong\Gouge\Ai\Gateways\Mcp\Resources;
 
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -8,7 +8,7 @@ use Laravel\Mcp\Server\Attributes\Description;
 use Laravel\Mcp\Server\Contracts\HasUriTemplate;
 use Laravel\Mcp\Server\Resource;
 use Laravel\Mcp\Support\UriTemplate;
-use Webong\LaravelGouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
+use Webong\Gouge\Ai\Gateways\Mcp\Support\FigurateMcpPayloads;
 
 #[Description('Read a Figurate thread by URI template.')]
 class ThreadResource extends Resource implements HasUriTemplate
