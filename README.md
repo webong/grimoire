@@ -10,7 +10,7 @@ Grimoire ownership does not make its registry service an agent runtime. Runtime 
 
 ## Runtime implementations
 
-- **Gouge** is Grimoire's Laravel AI implementation. It packages Laravel-native agent execution and host integration as the `webong/gouge` Composer package in `packages/gouge`.
+- **Gouge** is Grimoire's Laravel AI implementation. It packages consumer-independent Laravel-native agent execution and runtime storage as the `webong/gouge` Composer package in `packages/gouge`.
 - **Go SDK** is the planned native Go implementation. The current ADK-Go code is migration input for it, not the final public SDK boundary.
 - **Pi** is a planned implementation for the [Pi agent harness](https://pi.dev/), using its SDK or RPC mode to consume the same resolved definitions and runtime-facing lifecycle contract.
 
@@ -60,3 +60,7 @@ Start the registry with a file-backed catalog (the SQLite database above belongs
 ```sh
 go run ./cmd/grimlockd -catalog examples/catalog
 ```
+
+## Communication integration
+
+Figurate owns A2A, ACP, and A2UI communication extensions, including transport authentication, task/message correlation, durable coordination, outboxes, lifecycle projection, and UI validation/rendering contracts. Grimoire runtimes expose runtime-owned execution APIs and events. Figurate owns the bridge that translates its Work Exchange into those APIs and maps runtime events back into consumer updates. Grimoire contains no Figurate bridge or Work Exchange dependency. See [communication ownership and cleanup](docs/communication-ownership.md).

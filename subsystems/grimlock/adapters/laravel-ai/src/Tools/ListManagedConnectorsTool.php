@@ -18,7 +18,7 @@ final class ListManagedConnectorsTool implements Tool
 
     public function description(): Stringable|string
     {
-        return 'List active Grimlock-managed MCP, A2A, ACP, HTTP, and native connectors.';
+        return 'List active connector declarations available to this runtime.';
     }
 
     public function handle(ToolRequest $request): Stringable|string

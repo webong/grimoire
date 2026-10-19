@@ -29,4 +29,4 @@ The next agent should keep the public registry API generic, document any remaini
 
 The [runtime family plan](runtime-family.md) now records the Gouge, native Go SDK, and Pi implementation boundaries, minimum lifecycle semantics, and extraction sequence. The [tracker](figurate-extraction-tracker.md) distinguishes implemented registry behavior from remaining runtime work.
 
-Source inspection found two prerequisites: Gouge still has host-specific provider/runtime dependencies, and the current Go JSON digest needs specified cross-language serialization and shared vectors before PHP/TypeScript verification is portable. No runtime implementation or package extraction is claimed complete by this documentation pass.
+The Gouge host-dependency extraction is now implemented with runtime-only contracts, native Laravel AI execution, and isolated session/run storage. The Go JSON digest still needs specified cross-language serialization and shared vectors before PHP/TypeScript verification is portable. Full registry/runtime conformance is not claimed by this extraction.

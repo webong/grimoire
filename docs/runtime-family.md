@@ -9,10 +9,10 @@ Grimoire owns the definition contract, registry service, shared runtime contract
 | Component | Current state | Target responsibility |
 | --- | --- | --- |
 | Grimlock registry | `cmd/grimlockd` loads a catalog and serves registry HTTP. Legacy execution types still share packages and the root Go module. | Publish and resolve immutable definitions through an execution-free service and portable contract. |
-| Gouge / Laravel AI | Directly tracked `webong/gouge` Composer package at `packages/gouge`, with extracted host integration still present. | Laravel-native execution, queues, provider integration, runtime persistence, and policy enforcement. |
+| Gouge / Laravel AI | Directly tracked `webong/gouge` Composer package at `packages/gouge`, with runtime-owned contracts/storage; host bindings and duplicated communication protocols have been removed. | Laravel-native execution, queues, provider integration, runtime persistence, and policy enforcement. |
 | Native Go SDK | Planned; `subsystems/grimrock` and Grimlock execution code are migration inputs. | A native Go execution API and runtime state interfaces. ADK-Go can be an engine implementation without defining the public SDK. |
 | Pi implementation | Planned; no package or supported Pi version is pinned here. | A Grimoire adapter around Pi's native harness, with definition resolution, policy enforcement, and normalized lifecycle output. |
-| Consumer bindings | Gouge currently includes product-specific bindings. | Optional integration modules that translate a consumer's work contract into runtime requests and runtime events back into product records. |
+| Consumer bindings | Product-specific bindings have been removed from Gouge. | Consumer-owned integration modules, outside Grimoire, that translate work contracts into runtime requests and events into product records. |
 
 Only Gouge currently has an established runtime package identity. Go/Pi package names and repository locations remain open. Runtime implementations may share conformance fixtures without sharing storage tables, provider clients, or native session representations.
 
@@ -56,16 +56,11 @@ Shared conformance means agreement on these observable behaviors, not identical 
 
 ## Gouge extraction
 
-`GougeServiceProvider` currently imports application events and the host work-exchange registry, mutates host configuration, and registers product listeners. `Runtime/LaravelAiRuntime.php` resolves product resources, while `Coordination/GougeBridge.php` translates host work requests. Repository extraction and Composer metadata therefore do not yet establish standalone runtime portability.
+Gouge now exposes consumer-independent runtime DTOs, agent/executor/storage interfaces, and a native Laravel AI implementation. Its provider registers runtime services and isolated migrations only. Sessions and runs live in `gouge_sessions`/`gouge_runs`; no host-model lookup, product listener, channel configuration, route, GraphQL hook, or Work Exchange bridge remains in the package.
 
-Split these responsibilities in this order:
+The default factory accepts trusted deployment snapshots with exact name/version/digest matching. A verified network registry resolver and full policy/approval conformance remain separate work; source independence does not imply those contracts are complete. The runtime supports synchronous or explicit queue execution, persisted native tool history, scoped idempotency, and cooperative cancellation. See [Gouge's API and operational limits](../packages/gouge/README.md).
 
-1. Establish a runtime request/result boundary and registry resolver with digest verification, independent of application models.
-2. Move product resource lookup, work-exchange registration, delivery listeners, and conversation projection behind an optional consumer binding. Its dependencies must be explicit and its provider separately activated.
-3. Keep Laravel AI execution and runtime state in Gouge's core provider. A plain Laravel host must be able to boot it without product classes or consumer routes.
-4. Move reusable invocation, admission, approval, and idempotency behavior from `subsystems/grimlock/adapters/laravel-ai` after contract coverage exists. Split migrations so runtime installation does not require registry or consumer tables.
-
-The consumer binding may depend on the consumer's neutral versioned work-exchange contract. The consumer core must never acquire a dependency on Gouge or another runtime. Figurate authentication and service identity remain first-party in `mod/auth`; Gouge consumes supplied identity through the binding and does not absorb that module.
+Figurate owns the consumer bridge in its repository. It maps identity and work requests to runtime input and runtime events to product coordination. Old consumer tables are untouched, and migrating their records is an explicit consumer deployment task. The removed host implementation remains in Git history rather than a legacy package namespace that would reintroduce dependencies.
 
 ## Go SDK extraction
 
@@ -96,3 +91,7 @@ If an integration mode cannot enforce required semantics, it must reject that de
 6. Retire legacy execution APIs, schemas, and runtime tables only after their consumers have migrated and rollback/data migration requirements are documented.
 
 No existing runtime data or migration source is removed by this plan. Registry-only behavior in `grimlockd` is already implemented; independent package boundaries and runtime portability remain extraction work.
+
+## Communication integration
+
+Figurate owns A2A, ACP, and A2UI communication extensions, including transport authentication, task/message correlation, durable coordination, outboxes, lifecycle projection, and UI validation/rendering contracts. Grimoire runtimes expose runtime-owned execution APIs and events. Figurate owns the bridge that translates its Work Exchange into those APIs and maps runtime events back into consumer updates. Grimoire contains no Figurate bridge or Work Exchange dependency. See [communication ownership and cleanup](communication-ownership.md).

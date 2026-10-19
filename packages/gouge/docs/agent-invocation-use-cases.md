@@ -1,5 +1,7 @@
 # Agent Invocation Use Cases
 
+> Historical Figurate design material retained for context, not the current Gouge contract. A2A/ACP/A2UI, protocol authentication, correlation, coordination, outboxes, and product/UI projection belong to Figurate extensions. The corresponding Gouge implementation has been removed. Gouge exposes runtime APIs and events; Figurate owns the Work Exchange bridge in its own repository. See [current ownership and migration notes](../../../docs/communication-ownership.md).
+
 Agent invocation turns an existing Figurate `Post` into explicit, tracked agent work. Context ingestion remains side-effect free: storing a post does not automatically run an agent. The integration decides when processing should begin, supplies the instructions, and receives a task identifier that can be followed independently of the model invocation.
 
 The same contract applies to CRM conversations, ERP records, CMS changes, service requests, and other external artifacts. Figurate stores coordination context and agent output; the consuming application continues to own its domain records and state transitions.

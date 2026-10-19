@@ -316,7 +316,7 @@ func (d Device) Validate() error {
 	return nil
 }
 
-// Connector describes an external MCP, A2A, ACP, HTTP, or native boundary.
+// Connector declares an external boundary; it does not implement communication protocols.
 // CredentialRef is an opaque handle; it is never a secret value.
 type Connector struct {
 	APIVersion string        `json:"apiVersion"`

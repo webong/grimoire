@@ -19,7 +19,7 @@ Status: `[x]` verified, `[~]` transitional or migration source, `[ ]` not starte
 | [x] | Registry API | Registry-only HTTP now exposes `GET /v1/registry/agents|tools|skills` listing plus `POST /v1/registry/{kind}/{name}/{version}/publish|retire` lifecycle and `GET /v1/registry/agents/{name}/{version}/resolved` digest-verified lookup; legacy `transport/httpapi` session/run/approval/event endpoints remain migration sources to retire. |
 | [~] | Registry executable | `cmd/grimlockd` constructs a catalog and registry HTTP server only. Shared Go packages and the root module still contain historical execution dependencies. |
 | [ ] | Cross-language digest verification | Specify canonical bytes or a versioned digest format and shared Go/PHP/TypeScript vectors before claiming independent runtime verification. |
-| [~] | Gouge packaging | `packages/gouge` is a directly tracked Composer package with runtime metadata. Its core provider and execution path still depend on host application classes; extract an optional consumer binding. |
+| [~] | Gouge packaging | `packages/gouge` is a directly tracked Composer package with runtime metadata. Its core provider and execution path are now consumer-independent; Figurate must supply its own bridge. |
 | [ ] | Shared runtime contract | Extract lifecycle schemas and fixtures into a separately versioned contract; define admission, event delivery, cancellation, approvals, idempotency, and capability negotiation. |
 | [ ] | Go SDK migration | Move Grimrock's engine contract, runtime state, enforcement, and events into the native Go SDK, keeping ADK-Go behind an engine adapter. |
 | [ ] | Pi implementation | Prove SDK/RPC compatibility with admission and tool policy, pin a supported release, and implement the shared contract. |
@@ -42,3 +42,7 @@ The registry-only API and publication lifecycle are already present. Continue wi
 - Runtimes may cache a resolved definition by digest but never change it; new admission must also establish publication eligibility.
 - Host consumers never directly read Grimoire persistence or runtime state.
 - Do not extend execution code inside registry packages except for mechanical migration support. New execution features belong in runtime implementations.
+
+## Communication boundary update (2026-10-19)
+
+Gouge’s duplicate A2A/ACP/A2UI implementations, task ledger, and automatic prompt/outbox paths have been removed. Grimoire also no longer contains the Figurate Work Exchange bridge: Figurate owns that bridge and translates into runtime-owned APIs/events. See [cleanup inventory and migration notes](communication-ownership.md). Gouge host-model extraction is now complete: runtime-only DTOs, provider, native agent/executor interfaces, and scoped runtime tables replace the product integration. Registry resolution and full conformance remain tracked separately.

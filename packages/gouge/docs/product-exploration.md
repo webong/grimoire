@@ -1,5 +1,7 @@
 ## Current Product Definition
 
+> Historical Figurate design material retained for context, not the current Gouge contract. A2A/ACP/A2UI, protocol authentication, correlation, coordination, outboxes, and product/UI projection belong to Figurate extensions. The corresponding Gouge implementation has been removed. Gouge exposes runtime APIs and events; Figurate owns the Work Exchange bridge in its own repository. See [current ownership and migration notes](../../../docs/communication-ownership.md).
+
 Figurate is an API-first coordination platform for third-party systems.
 
 Its primary consumers are applications, agents, automation platforms, enterprise systems, and integration services. They connect through HTTP APIs, webhooks, WebSockets, MCP, A2A, and ACP to turn external conversations and events into durable, coordinated work.

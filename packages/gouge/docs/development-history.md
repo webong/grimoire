@@ -1,5 +1,7 @@
 # Development
 
+> Historical Figurate design material retained for context, not the current Gouge contract. A2A/ACP/A2UI, protocol authentication, correlation, coordination, outboxes, and product/UI projection belong to Figurate extensions. The corresponding Gouge implementation has been removed. Gouge exposes runtime APIs and events; Figurate owns the Work Exchange bridge in its own repository. See [current ownership and migration notes](../../../docs/communication-ownership.md).
+
 Figurate is developed as an API-first coordination platform for third-party systems.
 
 ## Product Boundary
@@ -68,7 +70,7 @@ Archived summary from `PLAN.md` (2026-02-03 to 2026-02-13):
 ## ADR Scope: AI Interoperability (A2A, A2UI, MCP)
 
 Date range: 2026-03-02 to 2026-03-08  
-Status: Implemented baseline and in active hardening
+Status: Historical Figurate baseline; superseded for Gouge by the communication ownership boundary
 
 ### Why this was needed
 

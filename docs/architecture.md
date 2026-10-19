@@ -24,7 +24,7 @@ Grimoire owns multiple runtime implementations without embedding them in the reg
 
 Each implementation is independently versioned and deployed. It resolves immutable definitions from the registry, owns its native session and execution state, and emits the shared lifecycle contract back to consumers.
 
-This is the target architecture. Gouge currently retains host-specific bindings; the Go SDK and Pi implementation are planned. The [runtime family plan](runtime-family.md) defines the extraction sequence and the compatibility work required before claiming conformance.
+This is the target architecture. Gouge now has consumer-independent execution contracts and storage; the Go SDK and Pi implementation are planned. The [runtime family plan](runtime-family.md) defines the extraction sequence and the compatibility work required before claiming conformance.
 
 ## Grimoire's public contract
 
@@ -58,3 +58,7 @@ The complete migration map is in [registry-runtime-boundary.md](registry-runtime
 ## Migration status
 
 The repository currently contains historical execution code under `subsystems/grimlock/core`, `storage`, `transport/httpapi`, and `subsystems/grimrock`. It is retained temporarily as migration source material for Gouge and the planned Go SDK and Pi implementations. `cmd/grimlockd` already serves only the registry transport, although shared packages and the root Go module still contain migration dependencies. New registry-service work must remain registry-only; execution work belongs in an independently versioned Grimoire runtime implementation.
+
+## Communication integration
+
+Figurate owns A2A, ACP, and A2UI communication extensions, including transport authentication, task/message correlation, durable coordination, outboxes, lifecycle projection, and UI validation/rendering contracts. Grimoire runtimes expose runtime-owned execution APIs and events. Figurate owns the bridge that translates its Work Exchange into those APIs and maps runtime events back into consumer updates. Grimoire contains no Figurate bridge or Work Exchange dependency. See [communication ownership and cleanup](communication-ownership.md).

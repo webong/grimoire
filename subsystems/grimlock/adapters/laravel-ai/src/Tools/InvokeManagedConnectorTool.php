@@ -13,7 +13,7 @@ use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
 use Throwable;
 
-// Generic successor to host MCP/A2A/ACP invocation tools. Policy is
+// Invokes a host-supplied connector executor, without implementing its transport. Policy is
 // checked before every dispatch; the invoker owns protocol-specific I/O.
 final class InvokeManagedConnectorTool implements Tool
 {

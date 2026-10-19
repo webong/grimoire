@@ -61,3 +61,7 @@ Consumers choose a runtime and send work using a runtime-facing contract. The pa
 Runtime systems emit normalized execution lifecycle events. Consumers store and present them as their own message/event records; they remain the source of truth for conversation and coordination data.
 
 The shared runtime contract is an extraction target, not a finished cross-runtime API. See [runtime-family.md](runtime-family.md) for minimum semantics, native extensions, and release criteria. Registry and runtime contract versions must evolve independently.
+
+## Communication integration
+
+Figurate owns A2A, ACP, and A2UI communication extensions, including transport authentication, task/message correlation, durable coordination, outboxes, lifecycle projection, and UI validation/rendering contracts. Grimoire runtimes expose runtime-owned execution APIs and events. Figurate owns the bridge that translates its Work Exchange into those APIs and maps runtime events back into consumer updates. Grimoire contains no Figurate bridge or Work Exchange dependency. See [communication ownership and cleanup](communication-ownership.md).

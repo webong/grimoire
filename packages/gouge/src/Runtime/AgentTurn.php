@@ -2,76 +2,61 @@
 
 namespace Webong\Gouge\Runtime;
 
-use App\Models\Server\Post;
-use App\Models\Server\Thread;
-use App\Models\Server\ThreadActor;
-use App\Models\Server\User;
-use Webong\Gouge\Support\AgentActors;
+use InvalidArgumentException;
 
 final readonly class AgentTurn
 {
-    /**
-     * @param  array<string, mixed>  $metadata
-     */
     public function __construct(
-        public int $threadId,
-        public string $threadUuid,
-        public int $postId,
-        public string $postUlid,
-        public int $userId,
-        public int $threadActorId,
-        public string $actorKey,
+        public string $scopeId,
+        public string $sessionId,
+        public string $runId,
+        public string $agentName,
+        public string $agentVersion,
+        public string $definitionDigest,
         public string $prompt,
-        public string $broadcastChannel,
-        public ?string $conversationPersistenceMode = null,
-        public ?string $providerChannelId = null,
         public array $metadata = [],
-    ) {}
-
-    public static function forPrompt(
-        Thread $thread,
-        Post $post,
-        User $user,
-        ThreadActor $threadActor,
-        string $broadcastChannel,
-        ?string $conversationPersistenceMode = null,
-    ): self {
-        $actorKey = $threadActor->actorName();
-
-        return new self(
-            threadId: (int) $thread->getKey(),
-            threadUuid: (string) $thread->uuid,
-            postId: (int) $post->getKey(),
-            postUlid: (string) $post->ulid,
-            userId: (int) $user->getKey(),
-            threadActorId: (int) $threadActor->getKey(),
-            actorKey: is_string($actorKey) && $actorKey !== '' ? $actorKey : AgentActors::Coordinator,
-            prompt: is_string($post->text) ? $post->text : '',
-            broadcastChannel: $broadcastChannel,
-            conversationPersistenceMode: $conversationPersistenceMode,
-            providerChannelId: self::trimmedString(data_get($post->meta, 'post_invocation.provider_channel_id')),
-            metadata: is_array($post->meta) ? $post->meta : [],
-        );
-    }
-
-    public function localCorrelationId(): string
-    {
-        return hash('sha256', implode(':', [
-            'figurate',
-            $this->threadUuid,
-            $this->postUlid,
-            $this->actorKey,
-        ]));
-    }
-
-    protected static function trimmedString(mixed $value): ?string
-    {
-        if (! is_string($value)) {
-            return null;
+    ) {
+        foreach ([$scopeId, $sessionId, $runId, $agentName, $agentVersion] as $id) {
+            if (trim($id) === '' || strlen($id) > 128) {
+                throw new InvalidArgumentException('Runtime identifiers must contain 1–128 bytes.');
+            }
         }
+        if (! preg_match('/^[a-f0-9]{64}$/D', $definitionDigest)) {
+            throw new InvalidArgumentException('A pinned SHA-256 definition digest is required.');
+        }
+        if (trim($prompt) === '') {
+            throw new InvalidArgumentException('A non-empty prompt is required.');
+        }
+        if (str_contains($agentName, '@') || str_contains($agentVersion, '@')) {
+            throw new InvalidArgumentException('Agent name and version must not contain the registration separator.');
+        }
+        self::validateMetadata($metadata);
+        json_encode($this->toArray(), JSON_THROW_ON_ERROR);
+    }
 
-        $trimmed = trim($value);
+    private static function validateMetadata(array $metadata): void
+    {
+        foreach ($metadata as $value) {
+            if (is_array($value)) {
+                self::validateMetadata($value);
+            } elseif ($value !== null && ! is_scalar($value)) {
+                throw new InvalidArgumentException('Metadata must contain only JSON values, never model objects or callbacks.');
+            }
+        }
+    }
 
-        return $trimmed === '' ? null : $trimmed;
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public function fingerprint(): string
+    {
+        return hash('sha256', json_encode($this->toArray(), JSON_THROW_ON_ERROR));
+    }
+
+    public function definitionKey(): string
+    {
+        return json_encode([$this->agentName, $this->agentVersion, $this->definitionDigest], JSON_THROW_ON_ERROR);
     }
 }

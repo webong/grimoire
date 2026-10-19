@@ -1,5 +1,5 @@
 // Package httpapi exposes Grimlock's control-plane application service over
-// a small native HTTP API. Protocol adapters such as MCP and A2A sit above it.
+// a small historical runtime HTTP API. Consumer communication extensions live outside it.
 package httpapi
 
 import (
