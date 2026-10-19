@@ -1,6 +1,13 @@
 # Communication ownership and runtime cleanup
 
-The boundary follows Figurate commit `f58f001` (2026-10-19). Figurate owns its independently composable `ext/a2a`, `ext/acp`, and `ext/a2ui` extensions. Grimoire owns immutable definition resolution and runtime execution: sessions, model/tool calls, enforcement, and execution results. Grimlock remains definition-only.
+> Historical Gouge cleanup record. Gouge is now migration source rather than a
+> target Grimoire product boundary.
+
+This cleanup followed Figurate commit `f58f001` (2026-10-19). At that stage,
+Figurate owned its independently composable `ext/a2a`, `ext/acp`, and `ext/a2ui`
+extensions while the Gouge package held runtime execution. The current Grimoire
+architecture retains only immutable registry and sandbox-materialization
+responsibilities; runtime execution belongs to external hosts.
 
 ## Inventory and disposition
 

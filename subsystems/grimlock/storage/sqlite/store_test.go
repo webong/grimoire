@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
-	grimlocksqlite "github.com/akive/grimoire/subsystems/grimlock/storage/sqlite"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
+	grimlocksqlite "github.com/webong/grimoire/subsystems/grimlock/storage/sqlite"
 	_ "modernc.org/sqlite"
 )
 

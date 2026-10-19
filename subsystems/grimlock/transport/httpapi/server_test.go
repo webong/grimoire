@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
-	"github.com/akive/grimoire/subsystems/grimlock/transport/httpapi"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
+	"github.com/webong/grimoire/subsystems/grimlock/transport/httpapi"
 )
 
 func TestControlPlaneLifecycleAndEventCursor(t *testing.T) {

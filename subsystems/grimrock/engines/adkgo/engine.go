@@ -14,7 +14,7 @@ import (
 	"google.golang.org/adk/v2/session"
 	"google.golang.org/genai"
 
-	grimrockapi "github.com/akive/grimoire/subsystems/grimrock/api/v1alpha1"
+	grimrockapi "github.com/webong/grimoire/subsystems/grimrock/api/v1alpha1"
 )
 
 type ModelResolver func(context.Context, string) (model.LLM, error)

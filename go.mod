@@ -1,4 +1,4 @@
-module github.com/akive/grimoire
+module github.com/webong/grimoire
 
 go 1.26.0
 

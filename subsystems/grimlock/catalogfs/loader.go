@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
 )
 
 func Load(catalog *core.Catalog, directory string) error {

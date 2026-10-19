@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
-	"github.com/akive/grimoire/subsystems/grimlock/transport/registryhttp"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
+	"github.com/webong/grimoire/subsystems/grimlock/transport/registryhttp"
 )
 
 func TestResolvedAgentDefinitionEndpoint(t *testing.T) {

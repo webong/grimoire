@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/akive/grimoire/subsystems/grimlock/catalogfs"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
-	"github.com/akive/grimoire/subsystems/grimlock/transport/registryhttp"
+	"github.com/webong/grimoire/subsystems/grimlock/catalogfs"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
+	"github.com/webong/grimoire/subsystems/grimlock/transport/registryhttp"
 )
 
 func main() {

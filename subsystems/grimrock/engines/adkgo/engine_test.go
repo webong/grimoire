@@ -11,10 +11,10 @@ import (
 	"google.golang.org/adk/v2/model"
 	"google.golang.org/genai"
 
-	grimlockapi "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
-	grimrockapi "github.com/akive/grimoire/subsystems/grimrock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimrock/engines/adkgo"
+	grimlockapi "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
+	grimrockapi "github.com/webong/grimoire/subsystems/grimrock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimrock/engines/adkgo"
 )
 
 func TestEngineExecutesAnAdmittedGrimlockTool(t *testing.T) {

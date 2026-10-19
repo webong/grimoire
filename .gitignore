@@ -1,2 +1,4 @@
 /grimlockd
+/grimoire
+/.grimoire/
 /subsystems/grimlock/adapters/laravel-ai/vendor/

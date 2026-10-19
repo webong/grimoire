@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
 )
 
 type ApprovalRecord struct {

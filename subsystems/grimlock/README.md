@@ -16,6 +16,6 @@ Registry-facing implementation:
 
 `core/service.go`, `state.go`, `executors.go`, SQLite runtime state, the
 legacy HTTP control-plane surface, and `adapters/laravel-ai` execution tools
-remain temporary migration sources for Grimoire-owned runtime implementations
-such as Gouge and the planned Go SDK and Pi integration. Do not add execution
+remain temporary migration sources for external runtime hosts. Gouge is no
+longer a target product boundary. Do not add execution
 behavior to Grimlock.

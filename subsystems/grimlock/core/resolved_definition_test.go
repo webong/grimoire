@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
-	"github.com/akive/grimoire/subsystems/grimlock/core"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
+	"github.com/webong/grimoire/subsystems/grimlock/core"
 )
 
 func TestCatalogResolvesDigestVerifiedImmutableDefinition(t *testing.T) {

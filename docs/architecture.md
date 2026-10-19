@@ -1,64 +1,78 @@
 # Grimoire architecture
 
-Grimoire owns the agent-definition contract and its official runtime implementations. The Grimoire registry is the source of truth for definitions; it does not run agents.
-
-The system has three explicit owners:
+Grimoire is an embeddable registry and sandbox materializer. It stores and
+resolves immutable runtimes, skills, tools, policies, and bundles over a small
+object/reference interface. A filesystem is sufficient; an object-store backend
+can provide the same semantics.
 
 ```text
-Consumers                        Grimoire runtimes                 Grimoire registry
--------------                   -----------------                 -----------------
-chat, coordination               sessions, runs, cancellation      versioned agent definitions
-routing and actors                model/provider invocation        tools, skills, capabilities
-delivery and audit records        agent loops and sandboxes         policy metadata and requirements
-                                 tool execution and delegation    publication, lookup, resolution
-                                                             immutable definition digests
+publisher ──put/publish──> Grimoire store <──resolve── host application
+                                │                         │
+                         immutable objects          resolution lock
+                         mutable references              │
+                                                   materialized sandbox
+                                                        │
+                                                   runtime process
 ```
+
+## Ownership boundary
+
+Grimoire owns:
+
+- manifest validation and canonicalization;
+- content-addressed object storage;
+- immutable resource versions and publication references;
+- dependency and capability resolution;
+- resolution lockfiles and their digests;
+- artifact verification; and
+- safe sandbox materialization.
+
+A runtime host owns process or container launch, provider calls, sessions,
+execution events, approvals, cancellation, credentials, and effects. Grimoire
+may store policies and tool effect declarations, but it does not enforce them
+against a live run.
+
+## Objects and references
+
+Objects are immutable byte sequences addressed by SHA-256. Manifests are
+canonicalized JSON; artifacts remain opaque bytes. References map an exact
+`kind/name@version` to an object digest and publication status.
+
+Only references change. A published version never changes content, and a
+retired version cannot be republished. Compare-and-swap revisions protect
+reference updates from stale writers.
+
+Indexes and discovery projections are caches. They must be rebuildable from
+objects and references.
+
+## Resolution
+
+A request selects one exact published runtime and zero or more exact skills,
+tools, and policies. Skill tool dependencies are added automatically. Resolution
+fails if an artifact is missing, a dependency is unpublished, or the runtime
+lacks a skill's required capability.
+
+The result locks every manifest and artifact digest. Sorting makes equivalent
+requests produce the same resolution digest. The lockfile is the portable
+boundary between the registry and runtime hosts.
+
+## Sandbox
+
+Materialization verifies all locked digests, writes manifests and artifacts as
+read-only files, and creates a separate writable `scratch` directory. Artifacts
+are not unpacked or executed by the registry. Archive expansion and process
+isolation belong to a runtime host with an explicit admission policy.
 
 ## Runtime implementations
 
-Grimoire owns multiple runtime implementations without embedding them in the registry service:
+Runtime implementations are registry content, not Grimoire-owned product
+families. A Laravel AI runtime, Pi harness, ADK-Go engine, or remote executor is
+represented by a `Runtime` manifest and opaque artifact. Gouge is retained only
+as migration source while reusable Laravel behavior is identified.
 
-- **Gouge** (`packages/gouge`) implements the runtime contract with Laravel AI.
-- **Go SDK** is the planned native Go implementation; the current ADK-Go execution code is migration input for it.
-- **Pi** is a planned implementation for the [Pi agent harness](https://pi.dev/), integrated through its SDK or RPC mode while preserving Pi-native extensions, skills, sessions, and events.
+## Migration
 
-Each implementation is independently versioned and deployed. It resolves immutable definitions from the registry, owns its native session and execution state, and emits the shared lifecycle contract back to consumers.
-
-This is the target architecture. Gouge now has consumer-independent execution contracts and storage; the Go SDK and Pi implementation are planned. The [runtime family plan](runtime-family.md) defines the extraction sequence and the compatibility work required before claiming conformance.
-
-## Grimoire's public contract
-
-Grimoire owns immutable, versioned manifests for:
-
-- `Agent`: instructions, configuration, tool and skill references, policy metadata, and runtime requirements.
-- `Tool`: capability declaration, schemas, side-effect classification, idempotency and approval requirements.
-- `Skill`: immutable instruction bundle metadata, content reference, and digest.
-- `Connector` and related capability declarations: protocol and opaque credential-reference metadata only.
-
-The registry accepts an immutable definition once under an exact name/version and resolves it into a `ResolvedAgentDefinition` for runtime systems. A resolved definition includes the agent and the exact declared versions of its tools and skills plus a stable digest. Each version carries a `draft`/`published`/`retired` publication lifecycle; only `published` versions are exposed via `ResolveAgentDefinition`, `ListPublished*`, and the registry HTTP lifecycle/listing endpoints (`transport/registryhttp`).
-
-The Grimoire registry service deliberately does **not** own:
-
-- sessions, runs, runtime events, cancellations, or approval decisions;
-- model/provider clients, agent loops, sandboxes, tool invocation, or sub-agent delegation;
-- credentials values, external product data, or chat/conversation delivery.
-
-Static policy is stored in a definition; enforcement occurs in runtime systems.
-
-## Integration flow
-
-1. A consumer chooses an exact Grimoire agent reference for an actor or workflow.
-2. A runtime system resolves that reference from Grimoire and verifies the returned definition digest.
-3. The runtime executes the definition with its own session, run, provider, sandbox, tool, and delegation state.
-4. The runtime returns lifecycle events to the consumer.
-5. The consumer persists and presents those events in its own product model.
-
-The complete migration map is in [registry-runtime-boundary.md](registry-runtime-boundary.md).
-
-## Migration status
-
-The repository currently contains historical execution code under `subsystems/grimlock/core`, `storage`, `transport/httpapi`, and `subsystems/grimrock`. It is retained temporarily as migration source material for Gouge and the planned Go SDK and Pi implementations. `cmd/grimlockd` already serves only the registry transport, although shared packages and the root Go module still contain migration dependencies. New registry-service work must remain registry-only; execution work belongs in an independently versioned Grimoire runtime implementation.
-
-## Communication integration
-
-Figurate owns A2A, ACP, and A2UI communication extensions, including transport authentication, task/message correlation, durable coordination, outboxes, lifecycle projection, and UI validation/rendering contracts. Grimoire runtimes expose runtime-owned execution APIs and events. Figurate owns the bridge that translates its Work Exchange into those APIs and maps runtime events back into consumer updates. Grimoire contains no Figurate bridge or Work Exchange dependency. See [communication ownership and cleanup](communication-ownership.md).
+The new target lives in `registry`. Historical session/run storage, SQLite
+tables, HTTP execution endpoints, Grimrock engines, and Gouge code remain in the
+repository temporarily so behavior can be inventoried without coupling it to
+the embedded registry.

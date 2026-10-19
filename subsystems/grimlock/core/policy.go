@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	api "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
+	api "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
 )
 
 var ErrDenied = errors.New("grimlock policy denied tool call")

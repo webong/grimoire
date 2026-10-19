@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	grimlockapi "github.com/akive/grimoire/subsystems/grimlock/api/v1alpha1"
+	grimlockapi "github.com/webong/grimoire/subsystems/grimlock/api/v1alpha1"
 )
 
 const APIVersion = "grimrock/v1alpha1"
