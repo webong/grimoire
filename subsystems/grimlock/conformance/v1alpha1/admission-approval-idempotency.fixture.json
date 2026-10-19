@@ -1,0 +1,65 @@
+{
+  "apiVersion": "grimlock/v1alpha1",
+  "kind": "ConformanceFixture",
+  "metadata": {"name": "admission-approval-idempotency", "version": "1.0.0"},
+  "spec": {
+    "agent": {
+      "apiVersion": "grimlock/v1alpha1",
+      "kind": "Agent",
+      "metadata": {"name": "operator", "version": "1.0.0"},
+      "spec": {
+        "execution": {"adapter": "adk-go", "modelProfileRef": "primary"},
+        "instruction": "Use admitted tools to answer the request.",
+        "tools": [
+          {"kind": "Tool", "name": "status.read", "version": "1.0.0"},
+          {"kind": "Tool", "name": "task.write", "version": "1.0.0"}
+        ]
+      }
+    },
+    "tools": [
+      {
+        "apiVersion": "grimlock/v1alpha1",
+        "kind": "Tool",
+        "metadata": {"name": "status.read", "version": "1.0.0"},
+        "spec": {
+          "description": "Read current status.",
+          "effect": "read",
+          "inputSchema": {"type": "object"},
+          "outputSchema": {"type": "object"},
+          "idempotency": "caller-key-required",
+          "executor": {"kind": "fixture"}
+        }
+      },
+      {
+        "apiVersion": "grimlock/v1alpha1",
+        "kind": "Tool",
+        "metadata": {"name": "task.write", "version": "1.0.0"},
+        "spec": {
+          "description": "Apply a task update.",
+          "effect": "write",
+          "inputSchema": {"type": "object"},
+          "outputSchema": {"type": "object"},
+          "idempotency": "caller-key-required",
+          "executor": {"kind": "fixture"}
+        }
+      }
+    ],
+    "calls": {
+      "read": {
+        "toolRef": {"kind": "Tool", "name": "status.read", "version": "1.0.0"},
+        "arguments": {"probe": "ready"},
+        "idempotencyKey": "status-1"
+      },
+      "write": {
+        "toolRef": {"kind": "Tool", "name": "task.write", "version": "1.0.0"},
+        "arguments": {"task": "deploy"},
+        "idempotencyKey": "operation-1"
+      }
+    },
+    "expectations": {
+      "advertisedBeforeGrant": ["status.read@1.0.0"],
+      "advertisedAfterGrant": ["status.read@1.0.0", "task.write@1.0.0"],
+      "eventTypes": ["run.started", "tool.approval.requested", "tool.approval.approved", "tool.completed"]
+    }
+  }
+}

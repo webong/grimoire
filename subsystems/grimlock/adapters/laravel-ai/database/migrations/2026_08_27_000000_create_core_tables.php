@@ -10,20 +10,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('resources', function (Blueprint $table): void {
+        Schema::create('catalog_entries', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('kind', 32);
             $table->string('name', 191);
             $table->string('version', 64);
             $table->char('digest', 64);
             $table->json('spec');
+            $table->string('status', 32)->default('draft');
             $table->timestampsTz();
 
-            $table->unique(['kind', 'name', 'version'], 'resource_version_unique');
-            $table->index('kind', 'resource_kind_index');
+            $table->unique(['kind', 'name', 'version'], 'catalog_entry_version_unique');
+            $table->index('kind', 'catalog_entry_kind_index');
+            $table->index('status', 'catalog_entry_status_index');
         });
 
-        Schema::create('clients', function (Blueprint $table): void {
+        Schema::create('agent_clients', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('kind', 64);
             $table->string('device_identifier', 191);
@@ -33,11 +35,11 @@ return new class extends Migration
             $table->timestampTz('last_seen_at')->nullable();
             $table->timestampsTz();
 
-            $table->unique('device_identifier', 'client_device_unique');
-            $table->index('kind', 'client_kind_index');
+            $table->unique('device_identifier', 'agent_client_device_unique');
+            $table->index('kind', 'agent_client_kind_index');
         });
 
-        Schema::create('devices', function (Blueprint $table): void {
+        Schema::create('agent_devices', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('client_id')->nullable();
             $table->string('kind', 64);
@@ -48,11 +50,11 @@ return new class extends Migration
             $table->timestampTz('last_seen_at')->nullable();
             $table->timestampsTz();
 
-            $table->index('kind', 'device_kind_index');
-            $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete();
+            $table->index('kind', 'agent_device_kind_index');
+            $table->foreign('client_id')->references('id')->on('agent_clients')->nullOnDelete();
         });
 
-        Schema::create('connectors', function (Blueprint $table): void {
+        Schema::create('agent_connectors', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('client_id')->nullable();
             $table->ulid('device_id')->nullable();
@@ -70,13 +72,13 @@ return new class extends Migration
             $table->timestampTz('last_seen_at')->nullable();
             $table->timestampsTz();
 
-            $table->unique('name', 'connector_name_unique');
-            $table->index(['protocol', 'status'], 'connector_discovery_index');
-            $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete();
-            $table->foreign('device_id')->references('id')->on('devices')->nullOnDelete();
+            $table->unique('name', 'agent_connector_name_unique');
+            $table->index(['protocol', 'status'], 'agent_connector_discovery_index');
+            $table->foreign('client_id')->references('id')->on('agent_clients')->nullOnDelete();
+            $table->foreign('device_id')->references('id')->on('agent_devices')->nullOnDelete();
         });
 
-        Schema::create('sessions', function (Blueprint $table): void {
+        Schema::create('agent_sessions', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('subject_id', 191);
             $table->ulid('agent_resource_id');
@@ -84,11 +86,11 @@ return new class extends Migration
             $table->json('state')->nullable();
             $table->timestampsTz();
 
-            $table->index('subject_id', 'session_subject_index');
-            $table->foreign('agent_resource_id')->references('id')->on('resources')->restrictOnDelete();
+            $table->index('subject_id', 'agent_session_subject_index');
+            $table->foreign('agent_resource_id')->references('id')->on('catalog_entries')->restrictOnDelete();
         });
 
-        Schema::create('runs', function (Blueprint $table): void {
+        Schema::create('agent_runs', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('session_id');
             $table->ulid('agent_resource_id');
@@ -101,14 +103,14 @@ return new class extends Migration
             $table->timestampTz('finished_at')->nullable();
             $table->timestampsTz();
 
-            $table->index(['session_id', 'created_at'], 'run_session_index');
-            $table->index('trace_id', 'run_trace_index');
-            $table->foreign('session_id')->references('id')->on('sessions')->cascadeOnDelete();
-            $table->foreign('agent_resource_id')->references('id')->on('resources')->restrictOnDelete();
-            $table->foreign('parent_run_id')->references('id')->on('runs')->nullOnDelete();
+            $table->index(['session_id', 'created_at'], 'agent_run_session_index');
+            $table->index('trace_id', 'agent_run_trace_index');
+            $table->foreign('session_id')->references('id')->on('agent_sessions')->cascadeOnDelete();
+            $table->foreign('agent_resource_id')->references('id')->on('catalog_entries')->restrictOnDelete();
+            $table->foreign('parent_run_id')->references('id')->on('agent_runs')->nullOnDelete();
         });
 
-        Schema::create('approvals', function (Blueprint $table): void {
+        Schema::create('agent_approvals', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('run_id');
             $table->ulid('tool_resource_id');
@@ -119,12 +121,12 @@ return new class extends Migration
             $table->timestampTz('resolved_at')->nullable();
             $table->timestampsTz();
 
-            $table->index(['run_id', 'status'], 'approval_run_status_index');
-            $table->foreign('run_id')->references('id')->on('runs')->cascadeOnDelete();
-            $table->foreign('tool_resource_id')->references('id')->on('resources')->restrictOnDelete();
+            $table->index(['run_id', 'status'], 'agent_approval_run_status_index');
+            $table->foreign('run_id')->references('id')->on('agent_runs')->cascadeOnDelete();
+            $table->foreign('tool_resource_id')->references('id')->on('catalog_entries')->restrictOnDelete();
         });
 
-        Schema::create('events', function (Blueprint $table): void {
+        Schema::create('agent_events', function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->ulid('run_id');
             $table->unsignedBigInteger('sequence');
@@ -135,12 +137,12 @@ return new class extends Migration
             $table->timestampTz('occurred_at');
             $table->timestampsTz();
 
-            $table->unique(['run_id', 'sequence'], 'event_sequence_unique');
-            $table->index(['run_id', 'occurred_at'], 'event_run_occurred_index');
-            $table->foreign('run_id')->references('id')->on('runs')->cascadeOnDelete();
+            $table->unique(['run_id', 'sequence'], 'agent_event_sequence_unique');
+            $table->index(['run_id', 'occurred_at'], 'agent_event_run_occurred_index');
+            $table->foreign('run_id')->references('id')->on('agent_runs')->cascadeOnDelete();
         });
 
-        Schema::create('idempotency_records', function (Blueprint $table): void {
+        Schema::create('agent_idempotency_records', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->ulid('run_id');
             $table->ulid('tool_resource_id');
@@ -151,22 +153,22 @@ return new class extends Migration
             $table->json('output')->nullable();
             $table->timestampsTz();
 
-            $table->unique(['run_id', 'tool_resource_id', 'idempotency_key'], 'idempotency_unique');
-            $table->foreign('run_id')->references('id')->on('runs')->cascadeOnDelete();
-            $table->foreign('tool_resource_id')->references('id')->on('resources')->restrictOnDelete();
+            $table->unique(['run_id', 'tool_resource_id', 'idempotency_key'], 'agent_idempotency_unique');
+            $table->foreign('run_id')->references('id')->on('agent_runs')->cascadeOnDelete();
+            $table->foreign('tool_resource_id')->references('id')->on('catalog_entries')->restrictOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('idempotency_records');
-        Schema::dropIfExists('events');
-        Schema::dropIfExists('approvals');
-        Schema::dropIfExists('runs');
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('connectors');
-        Schema::dropIfExists('devices');
-        Schema::dropIfExists('clients');
-        Schema::dropIfExists('resources');
+        Schema::dropIfExists('agent_idempotency_records');
+        Schema::dropIfExists('agent_events');
+        Schema::dropIfExists('agent_approvals');
+        Schema::dropIfExists('agent_runs');
+        Schema::dropIfExists('agent_sessions');
+        Schema::dropIfExists('agent_connectors');
+        Schema::dropIfExists('agent_devices');
+        Schema::dropIfExists('agent_clients');
+        Schema::dropIfExists('catalog_entries');
     }
 };

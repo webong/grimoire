@@ -34,23 +34,45 @@ func (s *Store) SyncCatalog(ctx context.Context, catalog *core.Catalog) error {
 	}
 	now := time.Now().UTC()
 	for _, resource := range catalog.Resources() {
+		status := string(resource.Status)
+		if status == "" {
+			status = string(core.PublicationPublished)
+		}
 		var existing string
+		var existingStatus string
 		err := s.db.QueryRowContext(ctx,
-			`SELECT id FROM resources WHERE kind = ? AND name = ? AND version = ?`,
+			`SELECT id, COALESCE(status, 'published') FROM catalog_entries WHERE kind = ? AND name = ? AND version = ?`,
 			resource.Kind, resource.Metadata.Name, resource.Metadata.Version,
-		).Scan(&existing)
+		).Scan(&existing, &existingStatus)
 		if err == nil {
+			if existingStatus != status {
+				if _, err := s.db.ExecContext(ctx, `UPDATE catalog_entries SET status = ?, digest = ?, spec = ?, updated_at = ? WHERE id = ?`, status, resource.Digest, string(resource.Spec), now, existing); err != nil {
+					return fmt.Errorf("update resource %s: %w", resource.Metadata.Key(), err)
+				}
+			}
 			continue
 		}
 		if !errors.Is(err, sql.ErrNoRows) {
 			return err
 		}
 		_, err = s.db.ExecContext(ctx,
-			`INSERT INTO resources (id, kind, name, version, digest, spec, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			`INSERT INTO catalog_entries (id, kind, name, version, digest, spec, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			resourceID(resource.Kind, resource.Metadata), resource.Kind, resource.Metadata.Name, resource.Metadata.Version,
-			resource.Digest, string(resource.Spec), now, now,
+			resource.Digest, string(resource.Spec), status, now, now,
 		)
 		if err != nil {
+			// Fallback for databases without status column.
+			if strings.Contains(err.Error(), "no column named status") || strings.Contains(err.Error(), "has no column named status") {
+				_, err2 := s.db.ExecContext(ctx,
+					`INSERT INTO catalog_entries (id, kind, name, version, digest, spec, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+					resourceID(resource.Kind, resource.Metadata), resource.Kind, resource.Metadata.Name, resource.Metadata.Version,
+					resource.Digest, string(resource.Spec), now, now,
+				)
+				if err2 != nil {
+					return fmt.Errorf("insert resource %s: %w", resource.Metadata.Key(), err2)
+				}
+				continue
+			}
 			return fmt.Errorf("insert resource %s: %w", resource.Metadata.Key(), err)
 		}
 	}
@@ -63,7 +85,7 @@ func (s *Store) PutSession(ctx context.Context, session api.Session) error {
 		return err
 	}
 	result, err := s.db.ExecContext(ctx,
-		`UPDATE sessions SET subject_id = ?, agent_resource_id = ?, updated_at = ? WHERE id = ?`,
+		`UPDATE agent_sessions SET subject_id = ?, agent_resource_id = ?, updated_at = ? WHERE id = ?`,
 		session.SubjectID, agentID, session.CreatedAt, session.ID,
 	)
 	if err != nil {
@@ -73,7 +95,7 @@ func (s *Store) PutSession(ctx context.Context, session api.Session) error {
 		return nil
 	}
 	_, err = s.db.ExecContext(ctx,
-		`INSERT INTO sessions (id, subject_id, agent_resource_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+		`INSERT INTO agent_sessions (id, subject_id, agent_resource_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
 		session.ID, session.SubjectID, agentID, "ready", session.CreatedAt, session.CreatedAt,
 	)
 	return err
@@ -84,7 +106,7 @@ func (s *Store) Session(ctx context.Context, id string) (api.Session, error) {
 	var kind string
 	err := s.db.QueryRowContext(ctx, `
 		SELECT s.id, s.subject_id, r.kind, r.name, r.version, s.created_at
-		FROM sessions s JOIN resources r ON r.id = s.agent_resource_id
+		FROM agent_sessions s JOIN catalog_entries r ON r.id = s.agent_resource_id
 		WHERE s.id = ?`, id,
 	).Scan(&session.ID, &session.SubjectID, &kind, &session.AgentRef.Name, &session.AgentRef.Version, &session.CreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -96,13 +118,13 @@ func (s *Store) Session(ctx context.Context, id string) (api.Session, error) {
 
 func (s *Store) PutRun(ctx context.Context, run api.Run) error {
 	var agentID string
-	if err := s.db.QueryRowContext(ctx, `SELECT agent_resource_id FROM sessions WHERE id = ?`, run.SessionID).Scan(&agentID); err != nil {
+	if err := s.db.QueryRowContext(ctx, `SELECT agent_resource_id FROM agent_sessions WHERE id = ?`, run.SessionID).Scan(&agentID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return fmt.Errorf("session %s: %w", run.SessionID, core.ErrNotFound)
 		}
 		return err
 	}
-	result, err := s.db.ExecContext(ctx, `UPDATE runs SET status = ?, updated_at = ? WHERE id = ?`, run.Status, time.Now().UTC(), run.ID)
+	result, err := s.db.ExecContext(ctx, `UPDATE agent_runs SET status = ?, updated_at = ? WHERE id = ?`, run.Status, time.Now().UTC(), run.ID)
 	if err != nil {
 		return err
 	}
@@ -110,8 +132,8 @@ func (s *Store) PutRun(ctx context.Context, run api.Run) error {
 		return nil
 	}
 	_, err = s.db.ExecContext(ctx, `
-		INSERT INTO runs (id, session_id, agent_resource_id, execution_adapter, status, started_at, created_at, updated_at)
-		SELECT ?, ?, ?, json_extract(spec, '$.execution.adapter'), ?, ?, ?, ? FROM resources WHERE id = ?`,
+		INSERT INTO agent_runs (id, session_id, agent_resource_id, execution_adapter, status, started_at, created_at, updated_at)
+		SELECT ?, ?, ?, json_extract(spec, '$.execution.adapter'), ?, ?, ?, ? FROM catalog_entries WHERE id = ?`,
 		run.ID, run.SessionID, agentID, run.Status, run.CreatedAt, run.CreatedAt, run.CreatedAt, agentID,
 	)
 	return err
@@ -119,7 +141,7 @@ func (s *Store) PutRun(ctx context.Context, run api.Run) error {
 
 func (s *Store) Run(ctx context.Context, id string) (api.Run, error) {
 	var run api.Run
-	err := s.db.QueryRowContext(ctx, `SELECT id, session_id, status, created_at FROM runs WHERE id = ?`, id).
+	err := s.db.QueryRowContext(ctx, `SELECT id, session_id, status, created_at FROM agent_runs WHERE id = ?`, id).
 		Scan(&run.ID, &run.SessionID, &run.Status, &run.CreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return api.Run{}, fmt.Errorf("run %s: %w", id, core.ErrNotFound)
@@ -141,7 +163,7 @@ func (s *Store) PutApproval(ctx context.Context, record core.ApprovalRecord) err
 		resolvedAt = time.Now().UTC()
 	}
 	result, err := s.db.ExecContext(ctx, `
-		UPDATE approvals SET status = ?, payload = ?, expires_at = ?, resolved_at = ?, updated_at = ? WHERE id = ?`,
+		UPDATE agent_approvals SET status = ?, payload = ?, expires_at = ?, resolved_at = ?, updated_at = ? WHERE id = ?`,
 		record.Approval.Status, string(payload), record.Approval.ExpiresAt, resolvedAt, time.Now().UTC(), record.Approval.ID,
 	)
 	if err != nil {
@@ -152,7 +174,7 @@ func (s *Store) PutApproval(ctx context.Context, record core.ApprovalRecord) err
 	}
 	now := time.Now().UTC()
 	_, err = s.db.ExecContext(ctx, `
-		INSERT INTO approvals (id, run_id, tool_resource_id, argument_digest, status, payload, expires_at, resolved_at, created_at, updated_at)
+		INSERT INTO agent_approvals (id, run_id, tool_resource_id, argument_digest, status, payload, expires_at, resolved_at, created_at, updated_at)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		record.Approval.ID, record.Approval.RunID, toolID, record.Approval.ArgumentDigest, record.Approval.Status,
 		string(payload), record.Approval.ExpiresAt, resolvedAt, now, now,
@@ -165,7 +187,7 @@ func (s *Store) Approval(ctx context.Context, id string) (core.ApprovalRecord, e
 	var kind, payload string
 	err := s.db.QueryRowContext(ctx, `
 		SELECT a.id, a.run_id, r.kind, r.name, r.version, a.argument_digest, a.status, a.expires_at, a.payload
-		FROM approvals a JOIN resources r ON r.id = a.tool_resource_id WHERE a.id = ?`, id,
+		FROM agent_approvals a JOIN catalog_entries r ON r.id = a.tool_resource_id WHERE a.id = ?`, id,
 	).Scan(
 		&record.Approval.ID, &record.Approval.RunID, &kind, &record.Approval.ToolRef.Name, &record.Approval.ToolRef.Version,
 		&record.Approval.ArgumentDigest, &record.Approval.Status, &record.Approval.ExpiresAt, &payload,
@@ -183,38 +205,88 @@ func (s *Store) Approval(ctx context.Context, id string) (core.ApprovalRecord, e
 	return record, nil
 }
 
-func (s *Store) PutIdempotency(ctx context.Context, record core.IdempotencyRecord) error {
+func (s *Store) ClaimIdempotency(ctx context.Context, record core.IdempotencyRecord) (core.IdempotencyRecord, bool, error) {
+	toolID, err := s.lookupResourceID(ctx, record.ToolRef)
+	if err != nil {
+		return core.IdempotencyRecord{}, false, err
+	}
+	now := time.Now().UTC()
+	result, err := s.db.ExecContext(ctx, `
+		INSERT INTO agent_idempotency_records (id, run_id, tool_resource_id, idempotency_key, lease_id, argument_digest, status, output, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(run_id, tool_resource_id, idempotency_key) DO NOTHING`,
+		stableID("idempotency", record.RunID, record.ToolRef.Key(), record.Key), record.RunID, toolID, record.Key,
+		record.LeaseID, record.ArgumentDigest, core.IdempotencyPending, nil, now, now,
+	)
+	if err != nil {
+		return core.IdempotencyRecord{}, false, err
+	}
+	if affected, _ := result.RowsAffected(); affected > 0 {
+		record.Status = core.IdempotencyPending
+		return record, true, nil
+	}
+	return s.idempotency(ctx, record.RunID, record.ToolRef, record.Key)
+}
+
+func (s *Store) CompleteIdempotency(ctx context.Context, record core.IdempotencyRecord) error {
+	return s.transitionIdempotency(ctx, record, core.IdempotencyCompleted, record.Output)
+}
+
+func (s *Store) FailIdempotency(ctx context.Context, record core.IdempotencyRecord) error {
+	return s.transitionIdempotency(ctx, record, core.IdempotencyFailed, nil)
+}
+
+func (s *Store) Idempotency(ctx context.Context, runID string, toolRef api.ResourceRef, key string) (core.IdempotencyRecord, error) {
+	record, _, err := s.idempotency(ctx, runID, toolRef, key)
+	return record, err
+}
+
+func (s *Store) idempotency(ctx context.Context, runID string, toolRef api.ResourceRef, key string) (core.IdempotencyRecord, bool, error) {
+	toolID, err := s.lookupResourceID(ctx, toolRef)
+	if err != nil {
+		return core.IdempotencyRecord{}, false, err
+	}
+	record := core.IdempotencyRecord{RunID: runID, ToolRef: toolRef, Key: key}
+	var output sql.NullString
+	var status string
+	err = s.db.QueryRowContext(ctx, `
+		SELECT lease_id, argument_digest, status, output FROM agent_idempotency_records
+		WHERE run_id = ? AND tool_resource_id = ? AND idempotency_key = ?`,
+		runID, toolID, key,
+	).Scan(&record.LeaseID, &record.ArgumentDigest, &status, &output)
+	if errors.Is(err, sql.ErrNoRows) {
+		return core.IdempotencyRecord{}, false, core.ErrNotFound
+	}
+	if err != nil {
+		return core.IdempotencyRecord{}, false, err
+	}
+	record.Status = core.IdempotencyStatus(status)
+	if output.Valid {
+		record.Output = json.RawMessage(output.String)
+	}
+	return record, false, nil
+}
+
+func (s *Store) transitionIdempotency(ctx context.Context, record core.IdempotencyRecord, status core.IdempotencyStatus, output json.RawMessage) error {
 	toolID, err := s.lookupResourceID(ctx, record.ToolRef)
 	if err != nil {
 		return err
 	}
-	now := time.Now().UTC()
-	_, err = s.db.ExecContext(ctx, `
-		INSERT INTO idempotency_records (id, run_id, tool_resource_id, idempotency_key, lease_id, argument_digest, status, output, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		stableID("idempotency", record.RunID, record.ToolRef.Key(), record.Key), record.RunID, toolID, record.Key,
-		record.LeaseID, record.ArgumentDigest, "completed", string(record.Output), now, now,
+	result, err := s.db.ExecContext(ctx, `
+		UPDATE agent_idempotency_records
+		SET status = ?, output = ?, updated_at = ?
+		WHERE run_id = ? AND tool_resource_id = ? AND idempotency_key = ?
+			AND lease_id = ? AND argument_digest = ? AND status = ?`,
+		status, nullableJSON(output), time.Now().UTC(), record.RunID, toolID, record.Key,
+		record.LeaseID, record.ArgumentDigest, core.IdempotencyPending,
 	)
-	return err
-}
-
-func (s *Store) Idempotency(ctx context.Context, runID string, toolRef api.ResourceRef, key string) (core.IdempotencyRecord, error) {
-	toolID, err := s.lookupResourceID(ctx, toolRef)
 	if err != nil {
-		return core.IdempotencyRecord{}, err
+		return err
 	}
-	record := core.IdempotencyRecord{RunID: runID, ToolRef: toolRef, Key: key}
-	var output string
-	err = s.db.QueryRowContext(ctx, `
-		SELECT lease_id, argument_digest, output FROM idempotency_records
-		WHERE run_id = ? AND tool_resource_id = ? AND idempotency_key = ? AND status = 'completed'`,
-		runID, toolID, key,
-	).Scan(&record.LeaseID, &record.ArgumentDigest, &output)
-	if errors.Is(err, sql.ErrNoRows) {
-		return core.IdempotencyRecord{}, core.ErrNotFound
+	if affected, _ := result.RowsAffected(); affected == 0 {
+		return fmt.Errorf("idempotency reservation %s: %w", record.Key, core.ErrNotFound)
 	}
-	record.Output = json.RawMessage(output)
-	return record, err
+	return nil
 }
 
 func (s *Store) AppendEvent(ctx context.Context, event api.Event) (api.Event, error) {
@@ -223,11 +295,11 @@ func (s *Store) AppendEvent(ctx context.Context, event api.Event) (api.Event, er
 		return api.Event{}, err
 	}
 	defer func() { _ = tx.Rollback() }()
-	if err := tx.QueryRowContext(ctx, `SELECT COALESCE(MAX(sequence), 0) + 1 FROM events WHERE run_id = ?`, event.RunID).Scan(&event.Sequence); err != nil {
+	if err := tx.QueryRowContext(ctx, `SELECT COALESCE(MAX(sequence), 0) + 1 FROM agent_events WHERE run_id = ?`, event.RunID).Scan(&event.Sequence); err != nil {
 		return api.Event{}, err
 	}
 	_, err = tx.ExecContext(ctx, `
-		INSERT INTO events (run_id, sequence, type, trace_id, parent_run_id, data, occurred_at, created_at, updated_at)
+		INSERT INTO agent_events (run_id, sequence, type, trace_id, parent_run_id, data, occurred_at, created_at, updated_at)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		event.RunID, event.Sequence, event.Type, nullString(event.TraceID), nullString(event.ParentRunID), string(event.Data),
 		event.OccurredAt, event.OccurredAt, event.OccurredAt,
@@ -247,7 +319,7 @@ func (s *Store) Events(ctx context.Context, runID string, after uint64) ([]api.E
 	}
 	rows, err := s.db.QueryContext(ctx, `
 		SELECT sequence, type, COALESCE(trace_id, ''), COALESCE(parent_run_id, ''), occurred_at, data
-		FROM events WHERE run_id = ? AND sequence > ? ORDER BY sequence`, runID, after)
+		FROM agent_events WHERE run_id = ? AND sequence > ? ORDER BY sequence`, runID, after)
 	if err != nil {
 		return nil, err
 	}
@@ -267,7 +339,7 @@ func (s *Store) Events(ctx context.Context, runID string, after uint64) ([]api.E
 
 func (s *Store) lookupResourceID(ctx context.Context, ref api.ResourceRef) (string, error) {
 	var id string
-	err := s.db.QueryRowContext(ctx, `SELECT id FROM resources WHERE kind = ? AND name = ? AND version = ?`, ref.Kind, ref.Name, ref.Version).Scan(&id)
+	err := s.db.QueryRowContext(ctx, `SELECT id FROM catalog_entries WHERE kind = ? AND name = ? AND version = ?`, ref.Kind, ref.Name, ref.Version).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return "", fmt.Errorf("resource %s: %w", ref.Key(), core.ErrNotFound)
 	}
@@ -288,4 +360,11 @@ func nullString(value string) any {
 		return nil
 	}
 	return value
+}
+
+func nullableJSON(value json.RawMessage) any {
+	if len(value) == 0 {
+		return nil
+	}
+	return string(value)
 }

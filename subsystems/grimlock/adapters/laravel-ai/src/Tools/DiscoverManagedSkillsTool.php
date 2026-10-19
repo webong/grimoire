@@ -10,7 +10,7 @@ use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
 
-// Replaces Figurate's application-bound discovery tool with the Grimlock
+// Replaces host application discovery tools with the Grimlock
 // catalog. The host supplies the catalog implementation.
 final class DiscoverManagedSkillsTool implements Tool
 {
@@ -27,7 +27,7 @@ final class DiscoverManagedSkillsTool implements Tool
     {
         $query = trim((string) ($request['query'] ?? ''));
         $limit = max(1, min(25, (int) ($request['limit'] ?? 10)));
-        $skills = $this->catalog->discover($query, $limit);
+        $skills = $this->catalog->discover($query, $limit, (bool) ($request['search_content'] ?? false));
 
         return json_encode([
             'ok' => true,
@@ -41,6 +41,7 @@ final class DiscoverManagedSkillsTool implements Tool
         return [
             'query' => $schema->string(),
             'limit' => $schema->integer(),
+            'search_content' => $schema->boolean(),
             'include_content_ref' => $schema->boolean(),
         ];
     }

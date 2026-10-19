@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Run extends GrimlockModel
 {
-    protected $table = 'runs';
+    protected $table = 'agent_runs';
 
     protected function casts(): array
     {

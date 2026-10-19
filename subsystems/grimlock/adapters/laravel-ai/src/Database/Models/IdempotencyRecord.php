@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class IdempotencyRecord extends GrimlockModel
 {
-    protected $table = 'idempotency_records';
+    protected $table = 'agent_idempotency_records';
 
     protected function casts(): array
     {

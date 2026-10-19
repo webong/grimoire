@@ -9,7 +9,7 @@ use Grimlock\LaravelAi\ValueObjects\ManagedConnector;
 use Grimlock\LaravelAi\ValueObjects\PolicyDecision;
 
 // The host may decorate this policy with network-trust, RBAC, and budget
-// checks. This baseline preserves Figurate's active/direction/allowlist gate.
+// checks. This baseline preserves active/direction/allowlist gate semantics.
 final class DefaultConnectorInvocationPolicy implements ConnectorInvocationPolicy
 {
     public function authorize(ManagedConnector $connector, string $operation): PolicyDecision

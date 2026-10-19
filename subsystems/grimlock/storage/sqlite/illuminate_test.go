@@ -25,12 +25,18 @@ func TestIlluminateManagedDatabaseIsUsableFromGo(t *testing.T) {
 	defer db.Close()
 
 	catalog := core.NewCatalog()
-	tool := api.Tool{APIVersion: api.APIVersion, Kind: api.KindTool, Metadata: api.Metadata{Name: "shared.read", Version: "1"}, Spec: api.ToolSpec{Effect: api.EffectRead, InputSchema: json.RawMessage(`{"type":"object"}`), OutputSchema: json.RawMessage(`{"type":"object"}`), Executor: api.ExecutorBinding{Kind: "fixture"}}}
+	tool := api.Tool{APIVersion: api.APIVersion, Kind: api.KindTool, Metadata: api.Metadata{Name: "shared.read", Version: "1"}, Spec: api.ToolSpec{Effect: api.EffectRead, InputSchema: json.RawMessage(`{"type":"object"}`), OutputSchema: json.RawMessage(`{"type":"object"}`), Idempotency: api.IdempotencyCallerKeyRequired, Executor: api.ExecutorBinding{Kind: "fixture"}}}
 	agent := api.Agent{APIVersion: api.APIVersion, Kind: api.KindAgent, Metadata: api.Metadata{Name: "shared-agent", Version: "1"}, Spec: api.AgentSpec{Execution: api.ExecutionSpec{Adapter: "adk-go", ModelProfileRef: "test"}, Tools: []api.ResourceRef{{Kind: api.KindTool, Name: "shared.read", Version: "1"}}}}
 	if err := catalog.RegisterTool(tool); err != nil {
 		t.Fatal(err)
 	}
+	if err := catalog.Publish(api.ResourceRef{Kind: api.KindTool, Name: tool.Metadata.Name, Version: tool.Metadata.Version}); err != nil {
+		t.Fatal(err)
+	}
 	if err := catalog.RegisterAgent(agent); err != nil {
+		t.Fatal(err)
+	}
+	if err := catalog.Publish(api.ResourceRef{Kind: api.KindAgent, Name: agent.Metadata.Name, Version: agent.Metadata.Version}); err != nil {
 		t.Fatal(err)
 	}
 	store, err := grimlocksqlite.New(db)
@@ -54,14 +60,18 @@ func TestIlluminateManagedDatabaseIsUsableFromGo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := service.RequestToolCall(t.Context(), core.ToolCallRequest{SessionID: session.ID, RunID: run.ID, ToolRef: agent.Spec.Tools[0], Arguments: json.RawMessage(`{}`)}); err != nil {
+	if _, err := service.RequestToolCall(t.Context(), core.ToolCallRequest{SessionID: session.ID, RunID: run.ID, ToolRef: agent.Spec.Tools[0], Arguments: json.RawMessage(`{}`), IdempotencyKey: "shared-read-1"}); err != nil {
 		t.Fatal(err)
 	}
+	record, err := store.Idempotency(t.Context(), run.ID, agent.Spec.Tools[0], "shared-read-1")
+	if err != nil || record.Status != core.IdempotencyCompleted {
+		t.Fatalf("expected a completed idempotency record in the Illuminate schema, record=%+v err=%v", record, err)
+	}
 	var eventCount int
-	if err := db.QueryRow(`SELECT COUNT(*) FROM events WHERE run_id = ?`, run.ID).Scan(&eventCount); err != nil {
+	if err := db.QueryRow(`SELECT COUNT(*) FROM agent_events WHERE run_id = ?`, run.ID).Scan(&eventCount); err != nil {
 		t.Fatal(err)
 	}
 	if eventCount != 2 {
-		t.Fatalf("expected run.started and tool.completed in Illuminate's events table, got %d", eventCount)
+		t.Fatalf("expected run.started and tool.completed in Illuminate's agent events table, got %d", eventCount)
 	}
 }

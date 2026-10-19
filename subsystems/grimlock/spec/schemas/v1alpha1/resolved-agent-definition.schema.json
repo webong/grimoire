@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:grimoire:grimlock:schema:v1alpha1:resolved-agent-definition",
+  "title": "Grimoire Resolved Agent Definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "agent", "tools", "skills", "digest"],
+  "properties": {
+    "apiVersion": {"const": "grimlock/v1alpha1"},
+    "kind": {"const": "ResolvedAgentDefinition"},
+    "agent": {"$ref": "agent.schema.json"},
+    "tools": {"type": "array", "items": {"$ref": "tool.schema.json"}},
+    "skills": {"type": "array", "items": {"$ref": "skill.schema.json"}},
+    "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

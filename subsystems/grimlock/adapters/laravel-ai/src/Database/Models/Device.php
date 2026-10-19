@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Device extends GrimlockModel
 {
-    protected $table = 'devices';
+    protected $table = 'agent_devices';
 
     protected function casts(): array
     {

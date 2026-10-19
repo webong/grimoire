@@ -88,12 +88,16 @@ type Agent struct {
 }
 
 type AgentSpec struct {
+	// Execution is a declarative runtime requirement retained under its
+	// v1alpha1 wire name. It never starts a run or selects a provider; runtime
+	// systems interpret it when executing a resolved definition.
 	Execution   ExecutionSpec  `json:"execution"`
 	Instruction string         `json:"instruction"`
 	Tools       []ResourceRef  `json:"tools,omitempty"`
 	Skills      []ResourceRef  `json:"skills,omitempty"`
 	Budgets     BudgetSpec     `json:"budgets,omitempty"`
 	Delegation  DelegationSpec `json:"delegation,omitempty"`
+	Policy      PolicyMetadata `json:"policy,omitempty"`
 }
 
 type ExecutionSpec struct {
@@ -107,7 +111,16 @@ type BudgetSpec struct {
 }
 
 type DelegationSpec struct {
+	// Delegation is retained only for v1alpha1 migration compatibility. Child
+	// agent selection and delegation execution belong to runtime systems, not Grimoire.
 	AllowedAgents []ResourceRef `json:"allowedAgents,omitempty"`
+}
+
+// PolicyMetadata is declarative registry data. Runtime systems enforce it when
+// executing a resolved definition; Grimoire never evaluates it against a run.
+type PolicyMetadata struct {
+	RequiredPermissions  []string `json:"requiredPermissions,omitempty"`
+	RequiredCapabilities []string `json:"requiredCapabilities,omitempty"`
 }
 
 func (a Agent) Validate() error {
@@ -128,6 +141,21 @@ func (a Agent) Validate() error {
 	for _, ref := range a.Spec.Skills {
 		if err := ref.Validate(KindSkill); err != nil {
 			return fmt.Errorf("agent skill: %w", err)
+		}
+	}
+	for _, ref := range a.Spec.Delegation.AllowedAgents {
+		if err := ref.Validate(KindAgent); err != nil {
+			return fmt.Errorf("agent delegated agent: %w", err)
+		}
+	}
+	for _, permission := range a.Spec.Policy.RequiredPermissions {
+		if strings.TrimSpace(permission) == "" {
+			return errors.New("agent policy requiredPermissions cannot contain an empty value")
+		}
+	}
+	for _, capability := range a.Spec.Policy.RequiredCapabilities {
+		if strings.TrimSpace(capability) == "" {
+			return errors.New("agent policy requiredCapabilities cannot contain an empty value")
 		}
 	}
 	return nil
@@ -151,6 +179,9 @@ type ToolSpec struct {
 }
 
 type ExecutorBinding struct {
+	// Executor is a v1alpha1 wire name for the capability requirement that a
+	// runtime must satisfy. It is declarative metadata, never an executable
+	// callback owned by Grimoire.
 	Kind       string `json:"kind"`
 	Binding    string `json:"binding,omitempty"`
 	Capability string `json:"capability,omitempty"`

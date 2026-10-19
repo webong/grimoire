@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Connector extends GrimlockModel
 {
-    protected $table = 'connectors';
+    protected $table = 'agent_connectors';
 
     protected function casts(): array
     {

@@ -9,5 +9,5 @@ use Grimlock\LaravelAi\ValueObjects\ManagedSkill;
 interface SkillCatalog
 {
     /** @return list<ManagedSkill> */
-    public function discover(string $query = '', int $limit = 10): array;
+    public function discover(string $query = '', int $limit = 10, bool $searchContent = false): array;
 }

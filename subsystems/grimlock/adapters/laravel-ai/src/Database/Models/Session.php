@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Session extends GrimlockModel
 {
-    protected $table = 'sessions';
+    protected $table = 'agent_sessions';
 
     protected function casts(): array
     {

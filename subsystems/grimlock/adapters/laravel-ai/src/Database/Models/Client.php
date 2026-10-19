@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Client extends GrimlockModel
 {
-    protected $table = 'clients';
+    protected $table = 'agent_clients';
 
     protected function casts(): array
     {

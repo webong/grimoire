@@ -1,7 +1,10 @@
-# Grimrock
+# Grimrock (deprecated)
 
-Grimrock is Grimoire's execution plane. Grimlock decides what may run and issues an admitted run; Grimrock dispatches that run to an engine and returns normalized execution events.
+Grimrock contains the initial Go execution contract and ADK-Go engine. Under
+the current architecture it is not part of the Grimoire registry service: its
+runtime API, engine selection, sessions, runs, cancellation, tool execution,
+delegation, and event normalization move into the Grimoire-owned Go SDK.
 
-Grimrock owns engine selection, execution requests, cancellation, and event normalization. It does not own the resource catalogue, authorization policy, approvals, credentials, or product data.
-
-The initial engine is Google ADK for Go. Laravel AI participates through its own adapter under the same execution contract.
+The directory is retained only as a migration source. New execution work must
+be implemented in an independently versioned runtime implementation, which
+consumes immutable resolved definitions from the Grimoire registry.

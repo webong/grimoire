@@ -13,7 +13,7 @@ use Laravel\Ai\Tools\Request as ToolRequest;
 use Stringable;
 use Throwable;
 
-// Generic successor to Figurate's MCP/A2A/ACP invocation tools. Policy is
+// Generic successor to host MCP/A2A/ACP invocation tools. Policy is
 // checked before every dispatch; the invoker owns protocol-specific I/O.
 final class InvokeManagedConnectorTool implements Tool
 {

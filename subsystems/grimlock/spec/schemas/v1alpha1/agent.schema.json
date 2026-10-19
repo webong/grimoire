@@ -7,7 +7,12 @@
     "apiVersion": {"const": "grimlock/v1alpha1"}, "kind": {"const": "Agent"}, "metadata": {"$ref": "resource.schema.json#/$defs/metadata"},
     "spec": {"type": "object", "additionalProperties": false, "required": ["execution", "instruction"], "properties": {
       "execution": {"type": "object", "additionalProperties": false, "required": ["adapter", "modelProfileRef"], "properties": {"adapter": {"type": "string", "minLength": 1}, "modelProfileRef": {"type": "string", "minLength": 1}}},
-      "instruction": {"type": "string"}, "tools": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/toolRef"}}, "skills": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/skillRef"}}
+      "instruction": {"type": "string"},
+      "tools": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/toolRef"}},
+      "skills": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/skillRef"}},
+      "budgets": {"type": "object", "additionalProperties": false, "properties": {"maxToolCalls": {"type": "integer", "minimum": 1}, "timeoutSeconds": {"type": "integer", "minimum": 1}}},
+      "delegation": {"type": "object", "additionalProperties": false, "properties": {"allowedAgents": {"type": "array", "items": {"$ref": "resource.schema.json#/$defs/agentRef"}}}},
+      "policy": {"type": "object", "additionalProperties": false, "properties": {"requiredPermissions": {"type": "array", "items": {"type": "string", "minLength": 1}}, "requiredCapabilities": {"type": "array", "items": {"type": "string", "minLength": 1}}}}
     }}
   }
 }

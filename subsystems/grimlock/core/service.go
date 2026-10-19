@@ -13,10 +13,13 @@ import (
 )
 
 var (
-	ErrApprovalRequired = errors.New("grimlock approval is required")
-	ErrApprovalRejected = errors.New("grimlock approval was rejected")
-	ErrApprovalExpired  = errors.New("grimlock approval expired")
-	ErrIdempotencyKey   = errors.New("grimlock caller idempotency key is required")
+	ErrApprovalRequired      = errors.New("grimlock approval is required")
+	ErrApprovalRejected      = errors.New("grimlock approval was rejected")
+	ErrApprovalExpired       = errors.New("grimlock approval expired")
+	ErrIdempotencyKey        = errors.New("grimlock caller idempotency key is required")
+	ErrIdempotencyConflict   = errors.New("grimlock idempotency key was reused with different arguments")
+	ErrIdempotencyInProgress = errors.New("grimlock idempotency key is already in progress")
+	ErrIdempotencyFailed     = errors.New("grimlock idempotency key has a terminal failed execution")
 )
 
 type IDGenerator func(string) string
@@ -114,7 +117,7 @@ func (s *Service) StartRunContext(ctx context.Context, sessionID string) (api.Ru
 }
 
 func (s *Service) AdvertisedTools(ctx context.Context, sessionID, runID string) ([]api.Tool, error) {
-	session, run, agent, err := s.resolveRun(sessionID, runID)
+	session, run, agent, err := s.resolveRun(ctx, sessionID, runID)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +140,7 @@ func (s *Service) RequestToolCall(ctx context.Context, request ToolCallRequest) 
 	if !isJSONObject(request.Arguments) {
 		return ToolCallResult{}, errors.New("tool arguments must be a JSON object")
 	}
-	session, run, _, err := s.resolveRun(request.SessionID, request.RunID)
+	session, run, _, err := s.resolveRun(ctx, request.SessionID, request.RunID)
 	if err != nil {
 		return ToolCallResult{}, err
 	}
@@ -249,30 +252,45 @@ func (s *Service) execute(ctx context.Context, session api.Session, run api.Run,
 	if err := s.policy.Authorize(ctx, call); err != nil {
 		return ToolCallResult{}, err
 	}
+	lease := ExecutionLease{ID: s.newID("lease"), Session: session, Run: run, Tool: tool, Arguments: append(json.RawMessage(nil), request.Arguments...), IdempotencyKey: request.IdempotencyKey}
+	var idempotency *IdempotencyRecord
 	if request.IdempotencyKey != "" {
-		record, err := s.store.Idempotency(ctx, run.ID, request.ToolRef, request.IdempotencyKey)
-		if err == nil {
-			return ToolCallResult{Lease: ExecutionLease{ID: record.LeaseID}, Output: record.Output, Replayed: true}, nil
-		}
-		if !errors.Is(err, ErrNotFound) {
+		record, claimed, err := s.store.ClaimIdempotency(ctx, IdempotencyRecord{
+			RunID: run.ID, ToolRef: request.ToolRef, Key: request.IdempotencyKey,
+			LeaseID: lease.ID, ArgumentDigest: digest(request.Arguments),
+		})
+		if err != nil {
 			return ToolCallResult{}, err
 		}
+		if record.ArgumentDigest != digest(request.Arguments) {
+			return ToolCallResult{Lease: ExecutionLease{ID: record.LeaseID}}, ErrIdempotencyConflict
+		}
+		if !claimed {
+			return idempotencyResult(record)
+		}
+		idempotency = &record
 	}
-	lease := ExecutionLease{ID: s.newID("lease"), Session: session, Run: run, Tool: tool, Arguments: append(json.RawMessage(nil), request.Arguments...), IdempotencyKey: request.IdempotencyKey}
 	output, err := s.executor.Execute(ctx, lease)
 	if err != nil {
+		if idempotency != nil {
+			if markErr := s.store.FailIdempotency(ctx, *idempotency); markErr != nil {
+				return ToolCallResult{Lease: lease}, markErr
+			}
+		}
 		_ = s.appendEvent(ctx, run.ID, "tool.failed", map[string]string{"tool": tool.Metadata.Key()})
 		return ToolCallResult{Lease: lease}, err
 	}
 	if !isJSONObject(output) {
+		if idempotency != nil {
+			if markErr := s.store.FailIdempotency(ctx, *idempotency); markErr != nil {
+				return ToolCallResult{Lease: lease}, markErr
+			}
+		}
 		return ToolCallResult{Lease: lease}, errors.New("tool executor output must be a JSON object")
 	}
-	if request.IdempotencyKey != "" {
-		record := IdempotencyRecord{
-			RunID: run.ID, ToolRef: request.ToolRef, Key: request.IdempotencyKey,
-			LeaseID: lease.ID, ArgumentDigest: digest(request.Arguments), Output: output,
-		}
-		if err := s.store.PutIdempotency(ctx, record); err != nil {
+	if idempotency != nil {
+		idempotency.Output = output
+		if err := s.store.CompleteIdempotency(ctx, *idempotency); err != nil {
 			return ToolCallResult{Lease: lease}, err
 		}
 	}
@@ -282,8 +300,7 @@ func (s *Service) execute(ctx context.Context, session api.Session, run api.Run,
 	return ToolCallResult{Lease: lease, Output: output}, nil
 }
 
-func (s *Service) resolveRun(sessionID, runID string) (api.Session, api.Run, api.Agent, error) {
-	ctx := context.Background()
+func (s *Service) resolveRun(ctx context.Context, sessionID, runID string) (api.Session, api.Run, api.Agent, error) {
 	session, err := s.store.Session(ctx, sessionID)
 	if err != nil {
 		return api.Session{}, api.Run{}, api.Agent{}, err
@@ -294,6 +311,22 @@ func (s *Service) resolveRun(sessionID, runID string) (api.Session, api.Run, api
 	}
 	agent, err := s.catalog.Agent(session.AgentRef)
 	return session, run, agent, err
+}
+
+func idempotencyResult(record IdempotencyRecord) (ToolCallResult, error) {
+	result := ToolCallResult{Lease: ExecutionLease{ID: record.LeaseID}}
+	switch record.Status {
+	case IdempotencyCompleted:
+		result.Output = record.Output
+		result.Replayed = true
+		return result, nil
+	case IdempotencyPending:
+		return result, ErrIdempotencyInProgress
+	case IdempotencyFailed:
+		return result, ErrIdempotencyFailed
+	default:
+		return result, errors.New("invalid grimlock idempotency record status")
+	}
 }
 
 func (s *Service) isAgentTool(agentRef, toolRef api.ResourceRef) bool {

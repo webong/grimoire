@@ -160,7 +160,8 @@ func writeError(response http.ResponseWriter, err error) {
 		status = http.StatusNotFound
 	} else if errors.Is(err, core.ErrDenied) {
 		status = http.StatusForbidden
-	} else if errors.Is(err, core.ErrApprovalRejected) || errors.Is(err, core.ErrApprovalExpired) {
+	} else if errors.Is(err, core.ErrApprovalRejected) || errors.Is(err, core.ErrApprovalExpired) ||
+		errors.Is(err, core.ErrIdempotencyConflict) || errors.Is(err, core.ErrIdempotencyInProgress) || errors.Is(err, core.ErrIdempotencyFailed) {
 		status = http.StatusConflict
 	}
 	writeJSON(response, status, map[string]string{"error": err.Error()})

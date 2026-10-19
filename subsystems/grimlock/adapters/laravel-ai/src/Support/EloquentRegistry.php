@@ -89,7 +89,7 @@ final class EloquentRegistry implements ClientRegistry, ConnectorRegistry, Devic
             ->all();
     }
 
-    public function discover(string $query = '', int $limit = 10): array
+    public function discover(string $query = '', int $limit = 10, bool $searchContent = false): array
     {
         $records = Resource::query()
             ->where('kind', 'Skill')

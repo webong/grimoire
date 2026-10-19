@@ -20,8 +20,20 @@ type IdempotencyRecord struct {
 	Key            string
 	LeaseID        string
 	ArgumentDigest string
+	Status         IdempotencyStatus
 	Output         json.RawMessage
 }
+
+// IdempotencyStatus describes the durable state of a caller-supplied
+// idempotency key. A failed execution is deliberately terminal: automatically
+// replaying an effect after an ambiguous failure would be unsafe.
+type IdempotencyStatus string
+
+const (
+	IdempotencyPending   IdempotencyStatus = "pending"
+	IdempotencyCompleted IdempotencyStatus = "completed"
+	IdempotencyFailed    IdempotencyStatus = "failed"
+)
 
 // StateStore is the durable boundary shared by the Go service and Laravel's
 // Illuminate-managed schema.
@@ -32,7 +44,11 @@ type StateStore interface {
 	Run(context.Context, string) (api.Run, error)
 	PutApproval(context.Context, ApprovalRecord) error
 	Approval(context.Context, string) (ApprovalRecord, error)
-	PutIdempotency(context.Context, IdempotencyRecord) error
+	// ClaimIdempotency atomically reserves a key. The bool is true only for
+	// the caller that created the reservation.
+	ClaimIdempotency(context.Context, IdempotencyRecord) (IdempotencyRecord, bool, error)
+	CompleteIdempotency(context.Context, IdempotencyRecord) error
+	FailIdempotency(context.Context, IdempotencyRecord) error
 	Idempotency(context.Context, string, api.ResourceRef, string) (IdempotencyRecord, error)
 	AppendEvent(context.Context, api.Event) (api.Event, error)
 	Events(context.Context, string, uint64) ([]api.Event, error)
@@ -110,11 +126,43 @@ func (s *MemoryStateStore) Approval(_ context.Context, id string) (ApprovalRecor
 	return record, nil
 }
 
-func (s *MemoryStateStore) PutIdempotency(_ context.Context, record IdempotencyRecord) error {
+func (s *MemoryStateStore) ClaimIdempotency(_ context.Context, record IdempotencyRecord) (IdempotencyRecord, bool, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	record.Output = append(json.RawMessage(nil), record.Output...)
-	s.idempotency[idempotencyStoreKey(record.RunID, record.ToolRef, record.Key)] = record
+	key := idempotencyStoreKey(record.RunID, record.ToolRef, record.Key)
+	if existing, ok := s.idempotency[key]; ok {
+		return cloneIdempotencyRecord(existing), false, nil
+	}
+	record.Status = IdempotencyPending
+	record.Output = nil
+	s.idempotency[key] = record
+	return cloneIdempotencyRecord(record), true, nil
+}
+
+func (s *MemoryStateStore) CompleteIdempotency(_ context.Context, record IdempotencyRecord) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	key := idempotencyStoreKey(record.RunID, record.ToolRef, record.Key)
+	existing, ok := s.idempotency[key]
+	if !ok || existing.LeaseID != record.LeaseID || existing.ArgumentDigest != record.ArgumentDigest || existing.Status != IdempotencyPending {
+		return fmt.Errorf("idempotency reservation %s: %w", key, ErrNotFound)
+	}
+	existing.Status = IdempotencyCompleted
+	existing.Output = append(json.RawMessage(nil), record.Output...)
+	s.idempotency[key] = existing
+	return nil
+}
+
+func (s *MemoryStateStore) FailIdempotency(_ context.Context, record IdempotencyRecord) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	key := idempotencyStoreKey(record.RunID, record.ToolRef, record.Key)
+	existing, ok := s.idempotency[key]
+	if !ok || existing.LeaseID != record.LeaseID || existing.ArgumentDigest != record.ArgumentDigest || existing.Status != IdempotencyPending {
+		return fmt.Errorf("idempotency reservation %s: %w", key, ErrNotFound)
+	}
+	existing.Status = IdempotencyFailed
+	s.idempotency[key] = existing
 	return nil
 }
 
@@ -125,8 +173,7 @@ func (s *MemoryStateStore) Idempotency(_ context.Context, runID string, toolRef 
 	if !ok {
 		return IdempotencyRecord{}, ErrNotFound
 	}
-	record.Output = append(json.RawMessage(nil), record.Output...)
-	return record, nil
+	return cloneIdempotencyRecord(record), nil
 }
 
 func (s *MemoryStateStore) AppendEvent(_ context.Context, event api.Event) (api.Event, error) {
@@ -158,4 +205,9 @@ func (s *MemoryStateStore) Events(_ context.Context, runID string, after uint64)
 
 func idempotencyStoreKey(runID string, toolRef api.ResourceRef, key string) string {
 	return runID + ":" + toolRef.Key() + ":" + key
+}
+
+func cloneIdempotencyRecord(record IdempotencyRecord) IdempotencyRecord {
+	record.Output = append(json.RawMessage(nil), record.Output...)
+	return record
 }

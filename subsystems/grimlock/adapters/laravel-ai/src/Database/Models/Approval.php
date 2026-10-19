@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Approval extends GrimlockModel
 {
-    protected $table = 'approvals';
+    protected $table = 'agent_approvals';
 
     protected function casts(): array
     {

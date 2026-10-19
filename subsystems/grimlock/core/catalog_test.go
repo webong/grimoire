@@ -11,13 +11,13 @@ func TestCatalogRegistersManagedClientDeviceAndConnector(t *testing.T) {
 	catalog := core.NewCatalog()
 	client := api.Client{
 		APIVersion: api.APIVersion, Kind: api.KindClient,
-		Metadata: api.Metadata{Name: "figurate-web", Version: "1.0.0"},
+		Metadata: api.Metadata{Name: "host-app-web", Version: "1.0.0"},
 		Spec:     api.ClientSpec{ClientKind: "web"},
 	}
 	if err := catalog.RegisterClient(client); err != nil {
 		t.Fatal(err)
 	}
-	clientRef := api.ResourceRef{Kind: api.KindClient, Name: "figurate-web", Version: "1.0.0"}
+	clientRef := api.ResourceRef{Kind: api.KindClient, Name: "host-app-web", Version: "1.0.0"}
 	device := api.Device{
 		APIVersion: api.APIVersion, Kind: api.KindDevice,
 		Metadata: api.Metadata{Name: "work-browser", Version: "1.0.0"},

@@ -6,7 +6,7 @@ namespace Grimlock\LaravelAi\Database\Models;
 
 final class Resource extends GrimlockModel
 {
-    protected $table = 'resources';
+    protected $table = 'catalog_entries';
 
     protected function casts(): array
     {

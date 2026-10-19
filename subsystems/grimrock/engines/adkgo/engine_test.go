@@ -30,7 +30,13 @@ func TestEngineExecutesAnAdmittedGrimlockTool(t *testing.T) {
 	if err := catalog.RegisterTool(tool); err != nil {
 		t.Fatal(err)
 	}
+	if err := catalog.Publish(grimlockapi.ResourceRef{Kind: grimlockapi.KindTool, Name: tool.Metadata.Name, Version: tool.Metadata.Version}); err != nil {
+		t.Fatal(err)
+	}
 	if err := catalog.RegisterAgent(agentManifest); err != nil {
+		t.Fatal(err)
+	}
+	if err := catalog.Publish(grimlockapi.ResourceRef{Kind: grimlockapi.KindAgent, Name: agentManifest.Metadata.Name, Version: agentManifest.Metadata.Version}); err != nil {
 		t.Fatal(err)
 	}
 	var ids atomic.Uint64

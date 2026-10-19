@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$autoload = getenv('GRIMOIRE_LARAVEL_AUTOLOAD') ?: dirname(__DIR__, 6).'/figurate/vendor/autoload.php';
+$autoload = getenv('GRIMOIRE_LARAVEL_AUTOLOAD') ?: dirname(__DIR__, 6).'/host-app/vendor/autoload.php';
 
 if (! is_file($autoload)) {
     fwrite(STDERR, "Set GRIMOIRE_LARAVEL_AUTOLOAD to a Laravel vendor/autoload.php file.\n");
@@ -59,17 +59,19 @@ Facade::setFacadeApplication($container);
 $migration = require __DIR__.'/../database/migrations/2026_08_27_000000_create_core_tables.php';
 $migration->up();
 
-$tables = ['resources', 'clients', 'devices', 'connectors', 'sessions', 'runs', 'approvals', 'events', 'idempotency_records'];
+$tables = ['catalog_entries', 'agent_clients', 'agent_devices', 'agent_connectors', 'agent_sessions', 'agent_runs', 'agent_approvals', 'agent_events', 'agent_idempotency_records'];
 
 foreach ($tables as $table) {
     assert(Schema::hasTable($table), "Missing table: {$table}");
 }
 
 assert(! Schema::hasTable('grimlock_resources'));
-assert(! Schema::hasColumn('resources', 'tenant_id'));
+assert(! Schema::hasTable('sessions'));
+assert(! Schema::hasTable('idempotency_records'));
+assert(! Schema::hasColumn('catalog_entries', 'tenant_id'));
 
 $registry = new EloquentRegistry;
-$registry->upsert(new ManagedClient('01JCLIENT00000000000000001', 'desktop', 'figurate-test-client'));
+$registry->upsert(new ManagedClient('01JCLIENT00000000000000001', 'desktop', 'runtime-host-test-client'));
 $registry->upsert(new ManagedDevice('01JDEVICE00000000000000001', 'browser', 'Test browser', '01JCLIENT00000000000000001', ['dom.read']));
 $registry->upsert(new ManagedConnector(
     '01JCONNECTOR000000000000001',

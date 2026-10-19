@@ -76,7 +76,7 @@ final class InMemoryRegistry implements ClientRegistry, ConnectorRegistry, Devic
         ));
     }
 
-    public function discover(string $query = '', int $limit = 10): array
+    public function discover(string $query = '', int $limit = 10, bool $searchContent = false): array
     {
         $query = mb_strtolower(trim($query));
         $limit = max(1, min(25, $limit));

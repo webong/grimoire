@@ -46,22 +46,40 @@ func register(catalog *core.Catalog, kind api.ResourceKind, raw []byte) error {
 	switch kind {
 	case api.KindAgent:
 		var value api.Agent
-		return decodeAndRegister(raw, &value, catalog.RegisterAgent)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterAgent); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindAgent, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	case api.KindTool:
 		var value api.Tool
-		return decodeAndRegister(raw, &value, catalog.RegisterTool)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterTool); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindTool, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	case api.KindSkill:
 		var value api.Skill
-		return decodeAndRegister(raw, &value, catalog.RegisterSkill)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterSkill); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindSkill, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	case api.KindClient:
 		var value api.Client
-		return decodeAndRegister(raw, &value, catalog.RegisterClient)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterClient); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindClient, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	case api.KindDevice:
 		var value api.Device
-		return decodeAndRegister(raw, &value, catalog.RegisterDevice)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterDevice); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindDevice, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	case api.KindConnector:
 		var value api.Connector
-		return decodeAndRegister(raw, &value, catalog.RegisterConnector)
+		if err := decodeAndRegister(raw, &value, catalog.RegisterConnector); err != nil {
+			return err
+		}
+		return catalog.Publish(api.ResourceRef{Kind: api.KindConnector, Name: value.Metadata.Name, Version: value.Metadata.Version})
 	default:
 		return fmt.Errorf("unsupported resource kind %q", kind)
 	}

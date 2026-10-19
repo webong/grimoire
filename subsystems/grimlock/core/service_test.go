@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -13,6 +15,7 @@ import (
 )
 
 func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testing.T) {
+	fixture := loadConformanceFixture(t)
 	policy := &testPolicy{allowWrite: false}
 	executor := &recordingExecutor{}
 	service := fixtureService(t, policy, executor)
@@ -22,7 +25,7 @@ func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testin
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(tools) != 1 || tools[0].Metadata.Name != "status.read" {
+	if got := toolKeys(tools); !reflect.DeepEqual(got, fixture.Spec.Expectations.AdvertisedBeforeGrant) {
 		t.Fatalf("write tool must be hidden before a grant: %#v", tools)
 	}
 
@@ -31,11 +34,11 @@ func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testin
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(tools) != 2 {
-		t.Fatalf("grant must advertise both tools, got %d", len(tools))
+	if got := toolKeys(tools); !reflect.DeepEqual(got, fixture.Spec.Expectations.AdvertisedAfterGrant) {
+		t.Fatalf("grant must advertise the fixture tools, got %v", got)
 	}
 
-	request := core.ToolCallRequest{SessionID: session.ID, RunID: run.ID, ToolRef: toolRef("task.write"), Arguments: json.RawMessage(`{"task":"deploy"}`), IdempotencyKey: "operation-1"}
+	request := fixture.Spec.Calls.Write.request(session.ID, run.ID)
 	pending, err := service.RequestToolCall(context.Background(), request)
 	if !errors.Is(err, core.ErrApprovalRequired) || pending.Approval == nil {
 		t.Fatalf("write must request approval, result=%#v err=%v", pending, err)
@@ -54,8 +57,7 @@ func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testin
 	}
 
 	policy.allowExecute = true
-	request.ToolRef = toolRef("status.read")
-	request.IdempotencyKey = "read-1"
+	request = fixture.Spec.Calls.Read.request(session.ID, run.ID)
 	first, err := service.RequestToolCall(context.Background(), request)
 	if err != nil {
 		t.Fatal(err)
@@ -72,7 +74,7 @@ func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testin
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"run.started", "tool.approval.requested", "tool.approval.approved", "tool.completed"}
+	want := fixture.Spec.Expectations.EventTypes
 	if got := eventTypes(events); !reflect.DeepEqual(got, want) {
 		t.Fatalf("unexpected event trail: got %v want %v", got, want)
 	}
@@ -81,22 +83,86 @@ func TestConformanceToolAdmissionApprovalReauthorizationAndIdempotency(t *testin
 func TestConformanceRequiresCallerIdempotencyKey(t *testing.T) {
 	service := fixtureService(t, &testPolicy{allowWrite: true, allowExecute: true}, &recordingExecutor{})
 	session, run := fixtureSessionAndRun(t, service)
-	_, err := service.RequestToolCall(context.Background(), core.ToolCallRequest{SessionID: session.ID, RunID: run.ID, ToolRef: toolRef("task.write"), Arguments: json.RawMessage(`{"task":"deploy"}`)})
+	fixture := loadConformanceFixture(t)
+	request := fixture.Spec.Calls.Write.request(session.ID, run.ID)
+	request.IdempotencyKey = ""
+	_, err := service.RequestToolCall(context.Background(), request)
 	if !errors.Is(err, core.ErrIdempotencyKey) {
 		t.Fatalf("expected caller idempotency requirement, got %v", err)
 	}
 }
 
-func fixtureService(t *testing.T, policy *testPolicy, executor *recordingExecutor) *core.Service {
+func TestIdempotencyRejectsArgumentReuseAndConcurrentExecution(t *testing.T) {
+	service := fixtureService(t, &testPolicy{allowWrite: true, allowExecute: true}, &recordingExecutor{})
+	session, run := fixtureSessionAndRun(t, service)
+	fixture := loadConformanceFixture(t)
+	request := fixture.Spec.Calls.Read.request(session.ID, run.ID)
+
+	if _, err := service.RequestToolCall(t.Context(), request); err != nil {
+		t.Fatal(err)
+	}
+	request.Arguments = json.RawMessage(`{"probe":"different"}`)
+	if _, err := service.RequestToolCall(t.Context(), request); !errors.Is(err, core.ErrIdempotencyConflict) {
+		t.Fatalf("expected argument conflict, got %v", err)
+	}
+
+	blocking := &blockingExecutor{started: make(chan struct{}), release: make(chan struct{})}
+	service = fixtureService(t, &testPolicy{allowWrite: true, allowExecute: true}, blocking)
+	session, run = fixtureSessionAndRun(t, service)
+	request = fixture.Spec.Calls.Read.request(session.ID, run.ID)
+	first := make(chan error, 1)
+	go func() {
+		_, err := service.RequestToolCall(context.Background(), request)
+		first <- err
+	}()
+	<-blocking.started
+	result, err := service.RequestToolCall(t.Context(), request)
+	if !errors.Is(err, core.ErrIdempotencyInProgress) {
+		t.Fatalf("expected an in-progress conflict, got result=%+v err=%v", result, err)
+	}
+	if result.Lease.ID == "" || blocking.calls != 1 {
+		t.Fatalf("expected one reserved lease and one execution, result=%+v calls=%d", result, blocking.calls)
+	}
+	close(blocking.release)
+	if err := <-first; err != nil {
+		t.Fatal(err)
+	}
+	replayed, err := service.RequestToolCall(t.Context(), request)
+	if err != nil || !replayed.Replayed || replayed.Lease.ID != result.Lease.ID || blocking.calls != 1 {
+		t.Fatalf("expected a single completed replay, result=%+v err=%v calls=%d", replayed, err, blocking.calls)
+	}
+}
+
+func TestIdempotencyDoesNotReplayAfterExecutionFailure(t *testing.T) {
+	executor := &failingExecutor{}
+	service := fixtureService(t, &testPolicy{allowWrite: true, allowExecute: true}, executor)
+	session, run := fixtureSessionAndRun(t, service)
+	request := loadConformanceFixture(t).Spec.Calls.Read.request(session.ID, run.ID)
+
+	if _, err := service.RequestToolCall(t.Context(), request); !errors.Is(err, errFixtureExecution) {
+		t.Fatalf("expected executor failure, got %v", err)
+	}
+	if _, err := service.RequestToolCall(t.Context(), request); !errors.Is(err, core.ErrIdempotencyFailed) || executor.calls != 1 {
+		t.Fatalf("expected a terminal failed idempotency record, err=%v calls=%d", err, executor.calls)
+	}
+}
+
+func fixtureService(t *testing.T, policy *testPolicy, executor core.ToolExecutor) *core.Service {
 	t.Helper()
+	fixture := loadConformanceFixture(t)
 	catalog := core.NewCatalog()
-	for _, tool := range []api.Tool{fixtureTool("status.read", api.EffectRead, api.IdempotencyCallerKeyRequired), fixtureTool("task.write", api.EffectWrite, api.IdempotencyCallerKeyRequired)} {
+	for _, tool := range fixture.Spec.Tools {
 		if err := catalog.RegisterTool(tool); err != nil {
 			t.Fatal(err)
 		}
+		if err := catalog.Publish(api.ResourceRef{Kind: api.KindTool, Name: tool.Metadata.Name, Version: tool.Metadata.Version}); err != nil {
+			t.Fatal(err)
+		}
 	}
-	agent := api.Agent{APIVersion: api.APIVersion, Kind: api.KindAgent, Metadata: api.Metadata{Name: "operator", Version: "1.0.0"}, Spec: api.AgentSpec{Execution: api.ExecutionSpec{Adapter: "adk-go", ModelProfileRef: "primary"}, Tools: []api.ResourceRef{toolRef("status.read"), toolRef("task.write")}}}
-	if err := catalog.RegisterAgent(agent); err != nil {
+	if err := catalog.RegisterAgent(fixture.Spec.Agent); err != nil {
+		t.Fatal(err)
+	}
+	if err := catalog.Publish(api.ResourceRef{Kind: api.KindAgent, Name: fixture.Spec.Agent.Metadata.Name, Version: fixture.Spec.Agent.Metadata.Version}); err != nil {
 		t.Fatal(err)
 	}
 	count := 0
@@ -109,7 +175,8 @@ func fixtureService(t *testing.T, policy *testPolicy, executor *recordingExecuto
 
 func fixtureSessionAndRun(t *testing.T, service *core.Service) (api.Session, api.Run) {
 	t.Helper()
-	session, err := service.CreateSession("user-1", api.ResourceRef{Kind: api.KindAgent, Name: "operator", Version: "1.0.0"})
+	fixture := loadConformanceFixture(t)
+	session, err := service.CreateSession("user-1", api.ResourceRef{Kind: api.KindAgent, Name: fixture.Spec.Agent.Metadata.Name, Version: fixture.Spec.Agent.Metadata.Version})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,14 +185,6 @@ func fixtureSessionAndRun(t *testing.T, service *core.Service) (api.Session, api
 		t.Fatal(err)
 	}
 	return session, run
-}
-
-func fixtureTool(name string, effect api.Effect, idempotency api.IdempotencyMode) api.Tool {
-	return api.Tool{APIVersion: api.APIVersion, Kind: api.KindTool, Metadata: api.Metadata{Name: name, Version: "1.0.0"}, Spec: api.ToolSpec{Effect: effect, InputSchema: json.RawMessage(`{"type":"object"}`), OutputSchema: json.RawMessage(`{"type":"object"}`), Idempotency: idempotency, Executor: api.ExecutorBinding{Kind: "fixture"}}}
-}
-
-func toolRef(name string) api.ResourceRef {
-	return api.ResourceRef{Kind: api.KindTool, Name: name, Version: "1.0.0"}
 }
 
 type testPolicy struct {
@@ -151,6 +210,83 @@ type recordingExecutor struct{ calls int }
 func (e *recordingExecutor) Execute(_ context.Context, _ core.ExecutionLease) (json.RawMessage, error) {
 	e.calls++
 	return json.RawMessage(`{"ok":true}`), nil
+}
+
+type blockingExecutor struct {
+	started chan struct{}
+	release chan struct{}
+	calls   int
+}
+
+var errFixtureExecution = errors.New("fixture execution failed")
+
+type failingExecutor struct{ calls int }
+
+func (e *failingExecutor) Execute(_ context.Context, _ core.ExecutionLease) (json.RawMessage, error) {
+	e.calls++
+	return nil, errFixtureExecution
+}
+
+func (e *blockingExecutor) Execute(_ context.Context, _ core.ExecutionLease) (json.RawMessage, error) {
+	e.calls++
+	close(e.started)
+	<-e.release
+	return json.RawMessage(`{"ok":true}`), nil
+}
+
+type conformanceFixture struct {
+	APIVersion string `json:"apiVersion"`
+	Kind       string `json:"kind"`
+	Spec       struct {
+		Agent api.Agent  `json:"agent"`
+		Tools []api.Tool `json:"tools"`
+		Calls struct {
+			Read  fixtureToolCall `json:"read"`
+			Write fixtureToolCall `json:"write"`
+		} `json:"calls"`
+		Expectations struct {
+			AdvertisedBeforeGrant []string `json:"advertisedBeforeGrant"`
+			AdvertisedAfterGrant  []string `json:"advertisedAfterGrant"`
+			EventTypes            []string `json:"eventTypes"`
+		} `json:"expectations"`
+	} `json:"spec"`
+}
+
+type fixtureToolCall struct {
+	ToolRef        api.ResourceRef `json:"toolRef"`
+	Arguments      json.RawMessage `json:"arguments"`
+	IdempotencyKey string          `json:"idempotencyKey"`
+}
+
+func (c fixtureToolCall) request(sessionID, runID string) core.ToolCallRequest {
+	return core.ToolCallRequest{
+		SessionID: sessionID, RunID: runID, ToolRef: c.ToolRef,
+		Arguments: append(json.RawMessage(nil), c.Arguments...), IdempotencyKey: c.IdempotencyKey,
+	}
+}
+
+func loadConformanceFixture(t *testing.T) conformanceFixture {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "conformance", "v1alpha1", "admission-approval-idempotency.fixture.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture conformanceFixture
+	if err := json.Unmarshal(raw, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	if fixture.APIVersion != api.APIVersion || fixture.Kind != "ConformanceFixture" {
+		t.Fatalf("unexpected fixture identity: %s %s", fixture.APIVersion, fixture.Kind)
+	}
+	return fixture
+}
+
+func toolKeys(tools []api.Tool) []string {
+	keys := make([]string, len(tools))
+	for index, tool := range tools {
+		keys[index] = tool.Metadata.Key()
+	}
+	return keys
 }
 
 func eventTypes(events []api.Event) []string {

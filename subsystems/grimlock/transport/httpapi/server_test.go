@@ -22,7 +22,13 @@ func TestControlPlaneLifecycleAndEventCursor(t *testing.T) {
 	if err := catalog.RegisterTool(tool); err != nil {
 		t.Fatal(err)
 	}
+	if err := catalog.Publish(api.ResourceRef{Kind: api.KindTool, Name: tool.Metadata.Name, Version: tool.Metadata.Version}); err != nil {
+		t.Fatal(err)
+	}
 	if err := catalog.RegisterAgent(agent); err != nil {
+		t.Fatal(err)
+	}
+	if err := catalog.Publish(api.ResourceRef{Kind: api.KindAgent, Name: agent.Metadata.Name, Version: agent.Metadata.Version}); err != nil {
 		t.Fatal(err)
 	}
 	var ids atomic.Uint64
