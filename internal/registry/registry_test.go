@@ -7,16 +7,17 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/webong/grimoire/registry"
-	"github.com/webong/grimoire/registry/fsstore"
+	"github.com/webong/grimoire/internal/registry"
+	"github.com/webong/grimoire/internal/registry/packstore"
 )
 
 func TestRegistryPublishesResolvesAndMaterializesBundle(t *testing.T) {
 	ctx := context.Background()
-	store, err := fsstore.Open(filepath.Join(t.TempDir(), "store"))
+	store, err := packstore.Open(filepath.Join(t.TempDir(), "registry.grim"))
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { _ = store.Close() })
 	reg, err := registry.Open(store)
 	if err != nil {
 		t.Fatal(err)
@@ -89,10 +90,11 @@ func TestRegistryPublishesResolvesAndMaterializesBundle(t *testing.T) {
 
 func TestResolutionRejectsMissingRuntimeCapability(t *testing.T) {
 	ctx := context.Background()
-	store, err := fsstore.Open(filepath.Join(t.TempDir(), "store"))
+	store, err := packstore.Open(filepath.Join(t.TempDir(), "registry.grim"))
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { _ = store.Close() })
 	reg, _ := registry.Open(store)
 	runtimeArtifact, _ := reg.PutArtifact(ctx, []byte("runtime"))
 	skillArtifact, _ := reg.PutArtifact(ctx, []byte("skill"))

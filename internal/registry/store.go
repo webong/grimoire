@@ -2,6 +2,7 @@ package registry
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 )
 
@@ -28,6 +29,15 @@ type Reference struct {
 type ReferenceQuery struct {
 	Kind   ResourceKind
 	Status PublicationStatus
+}
+
+func ReferenceRevision(reference Reference) (string, error) {
+	reference.Revision = ""
+	payload, err := json.Marshal(reference)
+	if err != nil {
+		return "", err
+	}
+	return string(DigestBytes(payload)), nil
 }
 
 // Store is the persistence boundary for embedded and remote Grimoire stores.

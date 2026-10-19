@@ -1,4 +1,4 @@
-// Command grimoire manages an embedded filesystem registry.
+// Command grimoire manages a self-contained single-file registry.
 package main
 
 import (
@@ -7,10 +7,11 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
-	"github.com/webong/grimoire/registry"
-	"github.com/webong/grimoire/registry/fsstore"
+	"github.com/webong/grimoire/internal/registry"
+	"github.com/webong/grimoire/internal/registry/packstore"
 )
 
 func main() {
@@ -27,24 +28,28 @@ func run(ctx context.Context, args []string) error {
 	switch args[0] {
 	case "init":
 		flags := flag.NewFlagSet("init", flag.ContinueOnError)
-		root := flags.String("store", ".grimoire", "registry directory")
+		database := databaseFlag(flags)
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
-		_, err := fsstore.Open(*root)
-		return err
+		store, err := packstore.Open(*database)
+		if err != nil {
+			return err
+		}
+		return store.Close()
 	case "put-artifact":
-		flags, root, file := fileFlags("put-artifact")
+		flags, database, file := fileFlags("put-artifact")
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
 		if *file == "" {
 			return errors.New("-file is required")
 		}
-		reg, err := openRegistry(*root)
+		reg, closer, err := openRegistry(*database)
 		if err != nil {
 			return err
 		}
+		defer closer.Close()
 		raw, err := os.ReadFile(*file)
 		if err != nil {
 			return err
@@ -56,17 +61,18 @@ func run(ctx context.Context, args []string) error {
 		fmt.Println(digest)
 		return nil
 	case "import":
-		flags, root, file := fileFlags("import")
+		flags, database, file := fileFlags("import")
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
 		if *file == "" {
 			return errors.New("-file is required")
 		}
-		reg, err := openRegistry(*root)
+		reg, closer, err := openRegistry(*database)
 		if err != nil {
 			return err
 		}
+		defer closer.Close()
 		raw, err := os.ReadFile(*file)
 		if err != nil {
 			return err
@@ -78,7 +84,7 @@ func run(ctx context.Context, args []string) error {
 		return writeJSON(os.Stdout, reference)
 	case "publish", "retire":
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
-		root := flags.String("store", ".grimoire", "registry directory")
+		database := databaseFlag(flags)
 		kind := flags.String("kind", "", "resource kind")
 		name := flags.String("name", "", "resource name")
 		version := flags.String("version", "", "resource version")
@@ -89,10 +95,11 @@ func run(ctx context.Context, args []string) error {
 		if err != nil {
 			return err
 		}
-		reg, err := openRegistry(*root)
+		reg, closer, err := openRegistry(*database)
 		if err != nil {
 			return err
 		}
+		defer closer.Close()
 		var reference registry.Reference
 		if args[0] == "publish" {
 			reference, err = reg.Publish(ctx, ref)
@@ -105,7 +112,7 @@ func run(ctx context.Context, args []string) error {
 		return writeJSON(os.Stdout, reference)
 	case "resolve":
 		flags := flag.NewFlagSet("resolve", flag.ContinueOnError)
-		root := flags.String("store", ".grimoire", "registry directory")
+		database := databaseFlag(flags)
 		requestPath := flags.String("request", "", "resolution request JSON")
 		output := flags.String("out", "", "lockfile output; stdout when omitted")
 		if err := flags.Parse(args[1:]); err != nil {
@@ -122,10 +129,11 @@ func run(ctx context.Context, args []string) error {
 		if err := json.Unmarshal(raw, &request); err != nil {
 			return err
 		}
-		reg, err := openRegistry(*root)
+		reg, closer, err := openRegistry(*database)
 		if err != nil {
 			return err
 		}
+		defer closer.Close()
 		resolution, err := reg.Resolve(ctx, request)
 		if err != nil {
 			return err
@@ -140,7 +148,7 @@ func run(ctx context.Context, args []string) error {
 		return os.WriteFile(*output, append(encoded, '\n'), 0o644)
 	case "materialize":
 		flags := flag.NewFlagSet("materialize", flag.ContinueOnError)
-		root := flags.String("store", ".grimoire", "registry directory")
+		database := databaseFlag(flags)
 		lockfile := flags.String("resolution", "", "resolution lockfile")
 		output := flags.String("out", "", "sandbox destination")
 		if err := flags.Parse(args[1:]); err != nil {
@@ -157,10 +165,11 @@ func run(ctx context.Context, args []string) error {
 		if err := json.Unmarshal(raw, &resolution); err != nil {
 			return err
 		}
-		reg, err := openRegistry(*root)
+		reg, closer, err := openRegistry(*database)
 		if err != nil {
 			return err
 		}
+		defer closer.Close()
 		return reg.Materialize(ctx, resolution, *output)
 	default:
 		return usageError()
@@ -169,17 +178,26 @@ func run(ctx context.Context, args []string) error {
 
 func fileFlags(name string) (*flag.FlagSet, *string, *string) {
 	flags := flag.NewFlagSet(name, flag.ContinueOnError)
-	root := flags.String("store", ".grimoire", "registry directory")
+	database := databaseFlag(flags)
 	file := flags.String("file", "", "input file")
-	return flags, root, file
+	return flags, database, file
 }
 
-func openRegistry(root string) (*registry.Registry, error) {
-	store, err := fsstore.Open(root)
+func databaseFlag(flags *flag.FlagSet) *string {
+	return flags.String("db", "grimoire.grim", "Grimoire database file")
+}
+
+func openRegistry(path string) (*registry.Registry, io.Closer, error) {
+	store, err := packstore.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return registry.Open(store)
+	reg, err := registry.Open(store)
+	if err != nil {
+		store.Close()
+		return nil, nil, err
+	}
+	return reg, store, nil
 }
 
 func parseRef(kind, name, version string) (registry.Ref, error) {

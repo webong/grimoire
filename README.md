@@ -1,74 +1,46 @@
 # Grimoire
 
-Grimoire is an embeddable, content-addressed registry for runtimes, skills,
-tools, policies, and resolved bundles. It behaves like a small DBMS over files
-or object storage: immutable objects are the source of truth, mutable references
-publish or retire named versions, and indexes are disposable caches.
+Grimoire is a self-contained registry executable for runtimes, skills, tools,
+policies, and resolved bundles. Like SQLite, it has no server to install: the
+`grimoire` binary reads and writes one portable database file. Applications in
+any language can invoke the binary and exchange JSON at the boundary.
 
-Grimoire does not require a database server and does not execute registered
-artifacts. A host embeds the registry, resolves an exact bundle, materializes a
-verified sandbox, and hands that sandbox to a runtime process.
+The database stores immutable content by SHA-256 and appends catalog changes as
+versioned records. Resolution produces a deterministic lockfile; materialization
+turns that lockfile into a verified sandbox for a separate runtime host.
+Grimoire stores and assembles executable content, but does not execute it.
 
-## Current embedded slice
+## Current slice
 
-The `registry` package currently provides:
+The binary currently provides:
 
+- one append-only `.grim` database file;
+- exclusive cross-process writer locking;
+- checksummed records and recovery from an incomplete trailing write;
 - typed `Runtime`, `Skill`, `Tool`, and `Policy` manifests;
-- canonical JSON objects addressed as `sha256:<digest>`;
-- immutable name/version references with `draft`, `published`, and `retired`
-  lifecycle states;
-- a storage interface suitable for filesystem and object-store backends;
-- a filesystem backend with atomic writes and compare-and-swap references;
-- exact runtime/skill/tool/policy resolution with capability checks;
+- immutable artifacts and manifests addressed as `sha256:<digest>`;
+- draft, published, and retired catalog states with compare-and-swap updates;
+- exact dependency and capability resolution;
 - deterministic resolution lockfiles; and
-- sandbox materialization with read-only manifests/artifacts and writable
-  scratch space.
+- sandbox materialization with read-only content and writable scratch space.
 
-```go
-store, err := fsstore.Open("./grimoire-data")
-if err != nil {
-    return err
-}
-
-catalog, err := registry.Open(store)
-if err != nil {
-    return err
-}
-
-resolution, err := catalog.Resolve(ctx, registry.ResolveRequest{
-    Runtime: registry.Ref{Kind: registry.KindRuntime, Name: "laravel-ai", Version: "1.0.0"},
-    Skills: []registry.Ref{{Kind: registry.KindSkill, Name: "summarize", Version: "1.2.0"}},
-})
-if err != nil {
-    return err
-}
-
-return catalog.Materialize(ctx, resolution, "./sandbox")
-```
-
-The `cmd/grimoire` CLI exposes the same embedded engine:
+Build and use the executable:
 
 ```sh
-go run ./cmd/grimoire init -store .grimoire
-go run ./cmd/grimoire put-artifact -store .grimoire -file runtime.tar
-go run ./cmd/grimoire import -store .grimoire -file runtime.json
-go run ./cmd/grimoire publish -store .grimoire -kind Runtime -name local -version 1.0.0
-go run ./cmd/grimoire resolve -store .grimoire -request request.json -out resolution.lock
-go run ./cmd/grimoire materialize -store .grimoire -resolution resolution.lock -out sandbox
+go build -o grimoire ./cmd/grimoire
+
+./grimoire init -db catalog.grim
+./grimoire put-artifact -db catalog.grim -file runtime.tar
+./grimoire import -db catalog.grim -file runtime.json
+./grimoire publish -db catalog.grim -kind Runtime -name local -version 1.0.0
+./grimoire resolve -db catalog.grim -request request.json -out resolution.lock
+./grimoire materialize -db catalog.grim -resolution resolution.lock -out sandbox
 ```
 
-The on-disk format separates immutable content from named references:
-
-```text
-grimoire-data/
-├── objects/sha256/
-├── refs/runtime/
-├── refs/skill/
-├── refs/tool/
-├── refs/policy/
-├── resolutions/
-└── indexes/
-```
+The Go packages under `internal/registry` implement the executable. They are not
+a supported application integration API. A long-lived stdio protocol can be
+added to avoid one process start per operation while preserving the same binary
+deployment model.
 
 Run the complete test suite with:
 
@@ -78,10 +50,10 @@ go test ./...
 
 ## Migration source
 
-`subsystems/grimlock`, `subsystems/grimrock`, and `packages/gouge` predate the
-embedded registry model. They remain temporarily as migration and compatibility
-source. Gouge is no longer a target product or architectural boundary; reusable
-Laravel AI behavior can become an ordinary registered runtime implementation.
+`subsystems/grimlock`, `subsystems/grimrock`, and `packages/gouge` predate this
+model. They remain temporarily as migration and compatibility source. Gouge is
+no longer a target product or architectural boundary; reusable Laravel AI
+behavior can become an ordinary registered runtime.
 
-See [the embedded architecture](docs/architecture.md) and
-[storage/transaction semantics](docs/embedded-registry.md).
+See [the architecture](docs/architecture.md) and
+[binary format and transaction semantics](docs/embedded-registry.md).

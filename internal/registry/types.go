@@ -1,5 +1,4 @@
-// Package registry implements Grimoire's embeddable, content-addressed
-// registry for runtimes, skills, tools, policies, and resolved bundles.
+// Package registry implements the internal engine used by the Grimoire binary.
 package registry
 
 import (
